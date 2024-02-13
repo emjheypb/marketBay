@@ -1,6 +1,7 @@
 //
 //  BackMenuFragment.swift
 //  marketBay
+//  Menu fragment with custom back button - for non-root views
 //
 //  Created by EmJhey PB on 2/13/24.
 //

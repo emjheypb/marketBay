@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Listing: Codable {
+struct Listing {
     let id: Int
     let title: String
     let description: String
@@ -17,7 +17,6 @@ struct Listing: Codable {
     let email: String
     let phoneNumber: String
     
-<<<<<<< HEAD
     // Initializer
     init(id: Int, title: String, description: String, category: String, price: Double, seller: User, email: String, phoneNumber: String) {
             self.id = id
@@ -29,21 +28,4 @@ struct Listing: Codable {
             self.email = email
             self.phoneNumber = phoneNumber
        }
-=======
-    init(id: Int, title: String, description: String, price: Double, sellerID: Int) {
-        self.id = id
-        self.title = title
-        self.description = description
-        self.price = price
-        self.sellerID = sellerID
-        
-        DataAccess().savePosts(post: self)
-    }
-    
-    // Function to retrieve seller's information
-    func getSeller() -> User? {
-        // Logic to fetch the user with the sellerID
-        return nil // Placeholder for demo, replace with actual logic
-    }
->>>>>>> 9399aa9 (F: menu navigation; E: models, menu login check, comments)
 }

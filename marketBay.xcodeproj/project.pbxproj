@@ -9,9 +9,6 @@
 /* Begin PBXBuildFile section */
 		821BC5AF2B7B03E000798E22 /* GlobalVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = 821BC5AE2B7B03E000798E22 /* GlobalVars.swift */; };
 		990024552B7B2F9900F94DF7 /* BackMenuFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990024542B7B2F9900F94DF7 /* BackMenuFragment.swift */; };
-		990024572B7B4C7E00F94DF7 /* UserDefaultsEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990024562B7B4C7E00F94DF7 /* UserDefaultsEnum.swift */; };
-		990024592B7B515700F94DF7 /* DataAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990024582B7B515700F94DF7 /* DataAccess.swift */; };
-		9900245B2B7B62BA00F94DF7 /* CustomBackFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9900245A2B7B62BA00F94DF7 /* CustomBackFragment.swift */; };
 		996334032B7AF55300E1EBAA /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996334022B7AF55300E1EBAA /* PostView.swift */; };
 		996334052B7AF57E00E1EBAA /* OrderFulfillmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996334042B7AF57E00E1EBAA /* OrderFulfillmentView.swift */; };
 		99B5E6CD2B75CAC700C0786A /* marketBayApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B5E6CC2B75CAC700C0786A /* marketBayApp.swift */; };
@@ -35,9 +32,6 @@
 /* Begin PBXFileReference section */
 		821BC5AE2B7B03E000798E22 /* GlobalVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalVars.swift; sourceTree = "<group>"; };
 		990024542B7B2F9900F94DF7 /* BackMenuFragment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackMenuFragment.swift; sourceTree = "<group>"; };
-		990024562B7B4C7E00F94DF7 /* UserDefaultsEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsEnum.swift; sourceTree = "<group>"; };
-		990024582B7B515700F94DF7 /* DataAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAccess.swift; sourceTree = "<group>"; };
-		9900245A2B7B62BA00F94DF7 /* CustomBackFragment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBackFragment.swift; sourceTree = "<group>"; };
 		996334022B7AF55300E1EBAA /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		996334042B7AF57E00E1EBAA /* OrderFulfillmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderFulfillmentView.swift; sourceTree = "<group>"; };
 		99B5E6C92B75CAC700C0786A /* marketBay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = marketBay.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -123,7 +117,6 @@
 			isa = PBXGroup;
 			children = (
 				99B5E6E52B75D4BA00C0786A /* Screens.swift */,
-				990024562B7B4C7E00F94DF7 /* UserDefaultsEnum.swift */,
 			);
 			path = enums;
 			sourceTree = "<group>";
@@ -133,7 +126,6 @@
 			children = (
 				99B5E6DC2B75CC3700C0786A /* MenuTemplate.swift */,
 				990024542B7B2F9900F94DF7 /* BackMenuFragment.swift */,
-				9900245A2B7B62BA00F94DF7 /* CustomBackFragment.swift */,
 			);
 			path = fragments;
 			sourceTree = "<group>";
@@ -144,7 +136,6 @@
 				A6B0BE102B7AB341006A149A /* Listing.swift */,
 				A6B0BE122B7AB34E006A149A /* User.swift */,
 				821BC5AE2B7B03E000798E22 /* GlobalVars.swift */,
-				990024582B7B515700F94DF7 /* DataAccess.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -253,7 +244,6 @@
 				A6B0BE132B7AB34E006A149A /* User.swift in Sources */,
 				99B5E6DD2B75CC3700C0786A /* MenuTemplate.swift in Sources */,
 				990024552B7B2F9900F94DF7 /* BackMenuFragment.swift in Sources */,
-				990024572B7B4C7E00F94DF7 /* UserDefaultsEnum.swift in Sources */,
 				99B5E6EA2B75D5D700C0786A /* ProfileView.swift in Sources */,
 				A6B0BE0C2B7AAF7E006A149A /* MarketplaceView.swift in Sources */,
 				821BC5AF2B7B03E000798E22 /* GlobalVars.swift in Sources */,
@@ -262,7 +252,6 @@
 				A6B0BE162B7AC15F006A149A /* CreatePostView.swift in Sources */,
 				99B5E6DF2B75CC9C00C0786A /* LoginView.swift in Sources */,
 				99B5E6E62B75D4BA00C0786A /* Screens.swift in Sources */,
-				9900245B2B7B62BA00F94DF7 /* CustomBackFragment.swift in Sources */,
 				99B5E6CD2B75CAC700C0786A /* marketBayApp.swift in Sources */,
 				99B5E6E82B75D57F00C0786A /* MyPostsView.swift in Sources */,
 				A6B0BE0E2B7AAFC0006A149A /* ListingView.swift in Sources */,
@@ -270,7 +259,6 @@
 				996334032B7AF55300E1EBAA /* PostView.swift in Sources */,
 				996334052B7AF57E00E1EBAA /* OrderFulfillmentView.swift in Sources */,
 				99B5E6E12B75CCBB00C0786A /* RegistrationView.swift in Sources */,
-				990024592B7B515700F94DF7 /* DataAccess.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

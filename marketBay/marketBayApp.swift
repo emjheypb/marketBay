@@ -10,12 +10,13 @@ import SwiftUI
 @main
 struct marketBayApp: App {
     @StateObject private var appRootManager = AppRootManager()
-    @StateObject private var dataAccess = DataAccess()
     
     var body: some Scene {
         WindowGroup {
             Group {
                 switch appRootManager.currentRoot {
+                case .loginView:
+                    LoginView()
                 case .favoritesView:
                     FavoritesView()
                 case .registrationView:
@@ -30,7 +31,7 @@ struct marketBayApp: App {
                     DashboardView()
                 }
             }
-            .environmentObject(appRootManager).environmentObject(dataAccess)
+            .environmentObject(appRootManager)
         }
     }
 }

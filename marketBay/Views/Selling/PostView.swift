@@ -83,6 +83,7 @@ struct PostView: View {
                     // MARK: Update Button
                     Button {
                         // MARK: Validate form
+                        showUpdateError = false
                         errorMessage = ""
                         
                         errorMessage += titleIn.isEmpty ? "\n• Title" : ""

@@ -150,6 +150,10 @@ struct ListingView: View {
                 
                 Button(action: {
                     // Action to call seller
+                    let telephone = "tel://"
+                    let formattedString = telephone + listing.seller.phoneNumber
+                    guard let url = URL(string: formattedString) else { return }
+                    UIApplication.shared.open(url)
                 }) {
                     Text("Call \(listing.seller.name)")
                         .padding()

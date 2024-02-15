@@ -54,17 +54,23 @@ struct DashboardView: View {
                 // ListView Layout
                 VStack {
                     NavigationLink(destination: FavoritesView().environmentObject(dataAccess)) {
-                        DashboardItemView(icon: "star.fill", title: "Favorites")}
-                    NavigationLink(destination: MyPostsView().environmentObject(dataAccess)) {
-                        DashboardItemView(icon: "doc.plaintext.fill", title: "Current Listings")}
-                    NavigationLink(destination: CreatePostView().environmentObject(dataAccess)) {
-                        DashboardItemView(icon: "plus.circle.fill", title: "Add a Listing")}
-                    
-                   // Display number of postings
-                   Text("Number of Postings: \(numberOfPostings)")
+                           DashboardItemView(icon: "star.fill", title: "Favorites")
+                       }
+                       .onTapGesture {
+                           appRootManager.currentRoot = .favoritesView
+                       }
+                       
+                       NavigationLink(destination: MyPostsView().environmentObject(dataAccess)) {
+                           DashboardItemView(icon: "doc.plaintext.fill", title: "Current Listings")
+                       }
+                       .onTapGesture {
+                           appRootManager.currentRoot = .myPostsView
+                       }
+                       
+                       NavigationLink(destination: CreatePostView().environmentObject(dataAccess)) {
+                           DashboardItemView(icon: "plus.circle.fill", title: "Add a Listing")
+                       }
                    
-                   // Display number of favorites gained by the user's postings
-                   Text("Number of Favorites Gained: \(numberOfFavorites)")
                 }
                 .padding()
                 

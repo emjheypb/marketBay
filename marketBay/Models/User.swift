@@ -8,14 +8,16 @@
 import Foundation
 
 class User: Codable {
+//    @DocumentID var id: String? = UUID().uuidString
     let id: Int
     var name: String
     var email: String
-    var password: String
+    var password: String // TODO: REMOVE
     var phoneNumber: String
-    var listings: [Listing] //for seller to manage listings
-    var favorites: [Listing] //for favorites list
-    var collections: [Collection] // Add collections property
+    var listings: [Listing] //for seller to manage listings TODO: CHANGE TO User_Listings - FirebaseConstants.swift
+    var favorites: [Listing] //for favorites list TODO: CHANGE TO User_Favorites - FirebaseConstants.swift
+    var collections: [Collection] // Add collections property TODO: CHANGE TO User_Collections - FirebaseConstants.swift
+    // TODO: ADD User_Chatrooms - FirebaseConstants.swift
 
 
     init(id: Int, name: String, email: String, password: String, phoneNumber: String) {

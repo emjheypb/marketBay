@@ -19,6 +19,15 @@
 		99741F122B7D5FFA00B6311F /* TextboxFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99741F112B7D5FFA00B6311F /* TextboxFragment.swift */; };
 		99741F142B7D636400B6311F /* MultilineTextboxFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99741F132B7D636400B6311F /* MultilineTextboxFragment.swift */; };
 		99741F162B7D65CE00B6311F /* PageHeadingFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99741F152B7D65CE00B6311F /* PageHeadingFragment.swift */; };
+		998345AF2B8E8A3800C4DB8E /* FirebaseConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998345AE2B8E8A3800C4DB8E /* FirebaseConstants.swift */; };
+		998345B22B8EA61300C4DB8E /* GeneralFireDBHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998345B12B8EA61300C4DB8E /* GeneralFireDBHelper.swift */; };
+		998345B42B8EA63500C4DB8E /* AuthenticationFireDBHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998345B32B8EA63500C4DB8E /* AuthenticationFireDBHelper.swift */; };
+		998345B62B8EA64200C4DB8E /* SellingFireDBHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998345B52B8EA64200C4DB8E /* SellingFireDBHelper.swift */; };
+		998345B82B8EA65000C4DB8E /* FireAuthHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998345B72B8EA65000C4DB8E /* FireAuthHelper.swift */; };
+		998345BA2B8EA69F00C4DB8E /* MiniListing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998345B92B8EA69F00C4DB8E /* MiniListing.swift */; };
+		998345BC2B8EAA8700C4DB8E /* Chatroom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998345BB2B8EAA8700C4DB8E /* Chatroom.swift */; };
+		998345BE2B8EAAFA00C4DB8E /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998345BD2B8EAAFA00C4DB8E /* Chat.swift */; };
+		998345C02B8EAEB500C4DB8E /* MiniUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998345BF2B8EAEB500C4DB8E /* MiniUser.swift */; };
 		99B5E6CD2B75CAC700C0786A /* marketBayApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B5E6CC2B75CAC700C0786A /* marketBayApp.swift */; };
 		99B5E6D12B75CACA00C0786A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99B5E6D02B75CACA00C0786A /* Assets.xcassets */; };
 		99B5E6D42B75CACA00C0786A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99B5E6D32B75CACA00C0786A /* Preview Assets.xcassets */; };
@@ -53,6 +62,15 @@
 		99741F112B7D5FFA00B6311F /* TextboxFragment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextboxFragment.swift; sourceTree = "<group>"; };
 		99741F132B7D636400B6311F /* MultilineTextboxFragment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultilineTextboxFragment.swift; sourceTree = "<group>"; };
 		99741F152B7D65CE00B6311F /* PageHeadingFragment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageHeadingFragment.swift; sourceTree = "<group>"; };
+		998345AE2B8E8A3800C4DB8E /* FirebaseConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseConstants.swift; sourceTree = "<group>"; };
+		998345B12B8EA61300C4DB8E /* GeneralFireDBHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralFireDBHelper.swift; sourceTree = "<group>"; };
+		998345B32B8EA63500C4DB8E /* AuthenticationFireDBHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationFireDBHelper.swift; sourceTree = "<group>"; };
+		998345B52B8EA64200C4DB8E /* SellingFireDBHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellingFireDBHelper.swift; sourceTree = "<group>"; };
+		998345B72B8EA65000C4DB8E /* FireAuthHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireAuthHelper.swift; sourceTree = "<group>"; };
+		998345B92B8EA69F00C4DB8E /* MiniListing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniListing.swift; sourceTree = "<group>"; };
+		998345BB2B8EAA8700C4DB8E /* Chatroom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chatroom.swift; sourceTree = "<group>"; };
+		998345BD2B8EAAFA00C4DB8E /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
+		998345BF2B8EAEB500C4DB8E /* MiniUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniUser.swift; sourceTree = "<group>"; };
 		99B5E6C92B75CAC700C0786A /* marketBay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = marketBay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		99B5E6CC2B75CAC700C0786A /* marketBayApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = marketBayApp.swift; sourceTree = "<group>"; };
 		99B5E6D02B75CACA00C0786A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -104,6 +122,18 @@
 			path = Selling;
 			sourceTree = "<group>";
 		};
+		998345B02B8EA5AC00C4DB8E /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				990024582B7B515700F94DF7 /* DataAccess.swift */,
+				998345B72B8EA65000C4DB8E /* FireAuthHelper.swift */,
+				998345B12B8EA61300C4DB8E /* GeneralFireDBHelper.swift */,
+				998345B32B8EA63500C4DB8E /* AuthenticationFireDBHelper.swift */,
+				998345B52B8EA64200C4DB8E /* SellingFireDBHelper.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
 		99B5E6C02B75CAC700C0786A = {
 			isa = PBXGroup;
 			children = (
@@ -124,10 +154,9 @@
 			isa = PBXGroup;
 			children = (
 				99B5E6CC2B75CAC700C0786A /* marketBayApp.swift */,
-				99B5E6EB2B75D64C00C0786A /* fragments */,
-				99B5E6E42B75D4AE00C0786A /* enums */,
+				A6B0BE0F2B7AB314006A149A /* Models */,
 				A6B0BE142B7AB3C1006A149A /* Views */,
-				A6B0BE0F2B7AB314006A149A /* Model */,
+				998345B02B8EA5AC00C4DB8E /* Controllers */,
 				99B5E6D02B75CACA00C0786A /* Assets.xcassets */,
 				99B5E6D22B75CACA00C0786A /* Preview Content */,
 			);
@@ -142,18 +171,19 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		99B5E6E42B75D4AE00C0786A /* enums */ = {
+		99B5E6E42B75D4AE00C0786A /* Enums */ = {
 			isa = PBXGroup;
 			children = (
 				99B5E6E52B75D4BA00C0786A /* Screens.swift */,
 				990024562B7B4C7E00F94DF7 /* UserDefaultsEnum.swift */,
 				A6B0BE612B7D87D8006A149A /* Categories.swift */,
 				991375892B7DD12D0080D058 /* PostStatus.swift */,
+				998345AE2B8E8A3800C4DB8E /* FirebaseConstants.swift */,
 			);
-			path = enums;
+			path = Enums;
 			sourceTree = "<group>";
 		};
-		99B5E6EB2B75D64C00C0786A /* fragments */ = {
+		99B5E6EB2B75D64C00C0786A /* Subviews */ = {
 			isa = PBXGroup;
 			children = (
 				99B5E6DC2B75CC3700C0786A /* MenuTemplate.swift */,
@@ -165,20 +195,24 @@
 				99741F132B7D636400B6311F /* MultilineTextboxFragment.swift */,
 				9913758B2B7DE73A0080D058 /* TextFragment.swift */,
 			);
-			path = fragments;
+			path = Subviews;
 			sourceTree = "<group>";
 		};
-		A6B0BE0F2B7AB314006A149A /* Model */ = {
+		A6B0BE0F2B7AB314006A149A /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				A6B0BE102B7AB341006A149A /* Listing.swift */,
+				99B5E6E42B75D4AE00C0786A /* Enums */,
 				A6B0BE122B7AB34E006A149A /* User.swift */,
-				821BC5AE2B7B03E000798E22 /* GlobalVars.swift */,
-				990024582B7B515700F94DF7 /* DataAccess.swift */,
-				A6B0BE5F2B7D811D006A149A /* SampleData.swift */,
+				998345BF2B8EAEB500C4DB8E /* MiniUser.swift */,
+				A6B0BE102B7AB341006A149A /* Listing.swift */,
+				998345B92B8EA69F00C4DB8E /* MiniListing.swift */,
 				A6B0BE632B7E25F7006A149A /* Collection.swift */,
+				998345BB2B8EAA8700C4DB8E /* Chatroom.swift */,
+				998345BD2B8EAAFA00C4DB8E /* Chat.swift */,
+				821BC5AE2B7B03E000798E22 /* GlobalVars.swift */,
+				A6B0BE5F2B7D811D006A149A /* SampleData.swift */,
 			);
-			path = Model;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		A6B0BE142B7AB3C1006A149A /* Views */ = {
@@ -187,6 +221,7 @@
 				A6B0BE172B7B4B29006A149A /* General */,
 				A6B0BE182B7B4B4A006A149A /* Authentication */,
 				996334062B7AF58200E1EBAA /* Selling */,
+				99B5E6EB2B75D64C00C0786A /* Subviews */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -283,18 +318,25 @@
 			buildActionMask = 2147483647;
 			files = (
 				A6B0BE132B7AB34E006A149A /* User.swift in Sources */,
+				998345C02B8EAEB500C4DB8E /* MiniUser.swift in Sources */,
 				A6B0BE622B7D87D8006A149A /* Categories.swift in Sources */,
+				998345BC2B8EAA8700C4DB8E /* Chatroom.swift in Sources */,
 				99B5E6DD2B75CC3700C0786A /* MenuTemplate.swift in Sources */,
 				990024552B7B2F9900F94DF7 /* BackMenuFragment.swift in Sources */,
 				990024572B7B4C7E00F94DF7 /* UserDefaultsEnum.swift in Sources */,
+				998345B82B8EA65000C4DB8E /* FireAuthHelper.swift in Sources */,
+				998345BA2B8EA69F00C4DB8E /* MiniListing.swift in Sources */,
 				99B5E6EA2B75D5D700C0786A /* ProfileView.swift in Sources */,
 				A6B0BE0C2B7AAF7E006A149A /* MarketplaceView.swift in Sources */,
 				821BC5AF2B7B03E000798E22 /* GlobalVars.swift in Sources */,
+				998345AF2B8E8A3800C4DB8E /* FirebaseConstants.swift in Sources */,
 				99B5E6DB2B75CB0500C0786A /* DashboardView.swift in Sources */,
 				A6B0BE642B7E25F7006A149A /* Collection.swift in Sources */,
 				99B5E6E32B75D28100C0786A /* FavoritesView.swift in Sources */,
 				9913758C2B7DE73A0080D058 /* TextFragment.swift in Sources */,
+				998345BE2B8EAAFA00C4DB8E /* Chat.swift in Sources */,
 				A6B0BE162B7AC15F006A149A /* CreatePostView.swift in Sources */,
+				998345B42B8EA63500C4DB8E /* AuthenticationFireDBHelper.swift in Sources */,
 				99741F122B7D5FFA00B6311F /* TextboxFragment.swift in Sources */,
 				99B5E6DF2B75CC9C00C0786A /* LoginView.swift in Sources */,
 				9913758A2B7DD12D0080D058 /* PostStatus.swift in Sources */,
@@ -302,9 +344,11 @@
 				99741F162B7D65CE00B6311F /* PageHeadingFragment.swift in Sources */,
 				9900245B2B7B62BA00F94DF7 /* CustomBackFragment.swift in Sources */,
 				99B5E6CD2B75CAC700C0786A /* marketBayApp.swift in Sources */,
+				998345B22B8EA61300C4DB8E /* GeneralFireDBHelper.swift in Sources */,
 				99741F142B7D636400B6311F /* MultilineTextboxFragment.swift in Sources */,
 				99B5E6E82B75D57F00C0786A /* MyPostsView.swift in Sources */,
 				A6B0BE0E2B7AAFC0006A149A /* ListingView.swift in Sources */,
+				998345B62B8EA64200C4DB8E /* SellingFireDBHelper.swift in Sources */,
 				A6B0BE112B7AB341006A149A /* Listing.swift in Sources */,
 				996334032B7AF55300E1EBAA /* PostView.swift in Sources */,
 				A6B0BE602B7D811D006A149A /* SampleData.swift in Sources */,

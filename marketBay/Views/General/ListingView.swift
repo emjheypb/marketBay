@@ -150,7 +150,7 @@ struct ListingView: View {
                 
                 Button(action: {
                     // Action to call seller
-                    if let phoneURL = URL(string: "tel://\(listing.phoneNumber)") {
+                    if let phoneURL = URL(string: "tel://\(listing.seller.phoneNumber)") {
                                        UIApplication.shared.open(phoneURL)
                                    }
                 }) {
@@ -160,7 +160,7 @@ struct ListingView: View {
                 
                 Button(action: {
                     // Action to email seller
-                    if let emailURL = URL(string: "mailto:\(listing.email)") {
+                    if let emailURL = URL(string: "mailto:\(listing.seller.email)") {
                                        UIApplication.shared.open(emailURL)
                                    }
                 }) {

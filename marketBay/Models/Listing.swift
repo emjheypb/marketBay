@@ -13,11 +13,9 @@ struct Listing: Codable, Identifiable {
     let description: String
     let category: Category
     let price: Double
-    let seller: User
-    let email: String
-    let phoneNumber: String
     var status: PostStatus
     var favoriteCount: Int // track the number of favorites
+    let seller: User // TODO: CHANGE TO MiniUser - MiniUser.swift
 
     
     // Initializer
@@ -28,8 +26,6 @@ struct Listing: Codable, Identifiable {
         self.category = category
         self.price = price
         self.seller = seller
-        self.email = email
-        self.phoneNumber = phoneNumber
         self.status = status
         self.favoriteCount = 0
     }

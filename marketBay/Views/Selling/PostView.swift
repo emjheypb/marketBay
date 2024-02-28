@@ -110,7 +110,7 @@ struct PostView: View {
                                 title: Text("There's no turning back!"),
                                 message: Text("Are you sure you want to update this post?"),
                                 primaryButton: .default(Text("Update")) {
-                                    let listingToUpdate = Listing(id: listing.id, title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: listing.seller, email: listing.email, phoneNumber: listing.phoneNumber, status: listing.status, favoriteCount: 0)
+                                    let listingToUpdate = Listing(id: listing.id, title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: listing.seller, email: listing.seller.email, phoneNumber: listing.seller.phoneNumber, status: listing.status, favoriteCount: 0)
                                     dataAccess.savePosts(post: listingToUpdate, isUpdate: true)
                                     dismiss()
                                 },

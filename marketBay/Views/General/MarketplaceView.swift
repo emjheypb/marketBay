@@ -55,7 +55,7 @@ struct MarketplaceView: View {
             .padding()
         }
         .onAppear() {
-            //loadDummyData()
+            loadDummyData()
             loadListings()
         }
     }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MyPostsView: View {
     @EnvironmentObject var dataAccess: DataAccess
+    private let fireDBHelper = SellingFireDBHelper.getInstance()
     
     var body: some View {
         NavigationStack() {
@@ -45,7 +46,7 @@ struct MyPostsView: View {
                     }
                 }
 
-                NavigationLink(destination: CreatePostView().environmentObject(dataAccess)) {
+                NavigationLink(destination: CreatePostView().environmentObject(dataAccess).environmentObject(fireDBHelper)) {
                     Image(systemName: "plus.circle.fill")
                         .resizable()
                         .scaledToFit()

@@ -26,7 +26,7 @@ final class DataAccess: ObservableObject {
             let encodedData = try JSONEncoder().encode(user)
             UserDefaults.standard.set(encodedData, forKey: UserDefaultsEnum.loggedInUser.rawValue)
             loggedInUser = user
-            loggedInUserPostings = getPosts(idFilter: user.id).sorted(by: { $0.id > $1.id })
+//            loggedInUserPostings = getPosts(idFilter: user.id).sorted(by: { $0.id > $1.id })
             loggedInUserFavorites = getLoggedInUserFavorites(for: user) // Retrieve favorites for the logged-in user
             loggedInUserCollections = getLoggedInUserCollections(for: user) // Retrieve collections for the logged-in user
             // Debug print to check if user is logged in and data is retrieved properly
@@ -41,7 +41,7 @@ final class DataAccess: ObservableObject {
         if let savedData = UserDefaults.standard.object(forKey: UserDefaultsEnum.loggedInUser.rawValue) as? Data {
             do{
                 let currentUser = try JSONDecoder().decode(User.self, from: savedData)
-                loggedInUserPostings = getPosts(idFilter: currentUser.id).sorted(by: { $0.id > $1.id })
+//                loggedInUserPostings = getPosts(idFilter: currentUser.id).sorted(by: { $0.id > $1.id })
                 return currentUser
             } catch {
                 print("Failed to convert Data to User")
@@ -85,7 +85,7 @@ final class DataAccess: ObservableObject {
         if let savedData = UserDefaults.standard.object(forKey: UserDefaultsEnum.posts.rawValue) as? Data {
             do{
                 let currentListings = try JSONDecoder().decode([Listing].self, from: savedData)
-                return idFilter == nil ? currentListings : currentListings.filter{$0.seller.id == idFilter}
+//                return idFilter == nil ? currentListings : currentListings.filter{$0.seller.id == idFilter}
             } catch {
                 print("Failed to convert Data to Listing")
             }
@@ -103,14 +103,14 @@ final class DataAccess: ObservableObject {
             if(isUpdate) {
                 savedPosts.remove(at: savedPosts.firstIndex(where: { $0.id == post.id })!)
             } else {
-                currentPost.id = savedPosts.count + 1
+//                currentPost.id = savedPosts.count + 1
             }
             
             savedPosts.append(currentPost)
             let encodedData = try JSONEncoder().encode(savedPosts)
             
             UserDefaults.standard.set(encodedData, forKey: UserDefaultsEnum.posts.rawValue)
-            loggedInUserPostings = getPosts(idFilter: currentPost.seller.id).sorted(by: { $0.id > $1.id })
+//            loggedInUserPostings = getPosts(idFilter: currentPost.seller.id).sorted(by: { $0.id > $1.id })
         } catch {
             print("Failed to encode Listings to Data")
         }
@@ -146,15 +146,15 @@ final class DataAccess: ObservableObject {
     }
     
     func incrementFavoriteCount(for listing: Listing) {
-           guard var mutableListing = listingsDictionary[listing.id] else { return }
-           mutableListing.favoriteCount += 1
-           listingsDictionary[listing.id] = mutableListing
+//           guard var mutableListing = listingsDictionary[listing.id] else { return }
+//           mutableListing.favoriteCount += 1
+//           listingsDictionary[listing.id] = mutableListing
        }
 
     func decrementFavoriteCount(for listing: Listing) {
-           guard var mutableListing = listingsDictionary[listing.id] else { return }
-           mutableListing.favoriteCount -= 1
-           listingsDictionary[listing.id] = mutableListing
+//           guard var mutableListing = listingsDictionary[listing.id] else { return }
+//           mutableListing.favoriteCount -= 1
+//           listingsDictionary[listing.id] = mutableListing
        }
     
     // Function to create a new collection
@@ -180,7 +180,7 @@ final class DataAccess: ObservableObject {
     // Function to add a listing to a collection
     func addToCollection(listing: Listing, collection: Collection) {
         if let index = loggedInUserCollections.firstIndex(where: { $0.id == collection.id }) {
-            loggedInUserCollections[index].listings.append(listing)
+//            loggedInUserCollections[index].listings.append(listing)
             // Save the updated collections to UserDefaults
                     saveLoggedInUserCollections(for: loggedInUser!)
         }
@@ -189,7 +189,7 @@ final class DataAccess: ObservableObject {
     // Function to remove a listing from a collection
         func removeFromCollection(listing: Listing, collection: Collection) {
             if let index = loggedInUserCollections.firstIndex(where: { $0.id == collection.id }) {
-                loggedInUserCollections[index].listings.removeAll(where: { $0.id == listing.id })
+//                loggedInUserCollections[index].listings.removeAll(where: { $0.id == listing.id })
                 saveLoggedInUserCollections(for: loggedInUser!)
             }
         }
@@ -234,13 +234,13 @@ final class DataAccess: ObservableObject {
     // MARK: Collection Management
         func addListingtoCollection(_ listing: Listing, toCollection collection: Collection) {
             if let index = loggedInUserCollections.firstIndex(where: { $0.id == collection.id }) {
-                loggedInUserCollections[index].listings.append(listing)
+//                loggedInUserCollections[index].listings.append(listing)
             }
         }
         
         func removeListingtoCollection(_ listing: Listing, fromCollection collection: Collection) {
             if let index = loggedInUserCollections.firstIndex(where: { $0.id == collection.id }) {
-                loggedInUserCollections[index].listings.removeAll(where: { $0.id == listing.id })
+//                loggedInUserCollections[index].listings.removeAll(where: { $0.id == listing.id })
             }
         }
 

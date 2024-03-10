@@ -69,6 +69,15 @@ enum FirebaseConstants: String {
      */
     
     case COLLECTION_LISTINGS = "Listings"
+    case FIELD_LISTING_TITLE = "title"
+    case FIELD_LISTING_DESCRIPTION = "description"
+    case FIELD_LISTING_CATEGORY = "category"
+    case FIELD_LISTING_PRICE = "price"
+    case FIELD_LISTING_STATUS = "status"
+    case FIELD_LISTING_FAVORITECOUNT = "favoriteCount"
+    case FIELD_LISTING_MINI_USER_NAME = "name"
+    case FIELD_LISTING_MINI_USER_EMAIL = "email"
+    case FIELD_LISTING_MINI_USER_PHONE = "phone"
     /*
      "Listings" : {
         "listingID1" : {

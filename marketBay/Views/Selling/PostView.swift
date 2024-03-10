@@ -40,7 +40,7 @@ struct PostView: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 200, height: 200)
                 
-                Text("# \(listing.id)")
+                Text("# \(listing.id!)")
                     .font(.title2)
                 
                 // MARK: Product Details
@@ -110,7 +110,7 @@ struct PostView: View {
                                 title: Text("There's no turning back!"),
                                 message: Text("Are you sure you want to update this post?"),
                                 primaryButton: .default(Text("Update")) {
-                                    let listingToUpdate = Listing(id: listing.id, title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: listing.seller, email: listing.seller.email, phoneNumber: listing.seller.phoneNumber, status: listing.status, favoriteCount: 0)
+                                    let listingToUpdate = Listing(title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: listing.seller, status: listing.status, favoriteCount: 0)
                                     dataAccess.savePosts(post: listingToUpdate, isUpdate: true)
                                     dismiss()
                                 },
@@ -169,5 +169,5 @@ struct PostView: View {
 }
 
 #Preview {
-    PostView(listing: Listing(id: 1, title: "Unlock! A Noside Story", description: "Secret Adventures: Part 1", category: .toys, price: 25.0, seller: User(id: 1, name: "MJ", email: "mb", password: "mb", phoneNumber: "123"), email: "users[0].email", phoneNumber: "users[0].phoneNumber", status: .available, favoriteCount: 0))
+    PostView(listing: Listing(title: "Unlock! A Noside Story", description: "Secret Adventures: Part 1", category: .toys, price: 25.0, seller: MiniUser(name: "MJ", email: "mb", phoneNumber: "123"), status: .available, favoriteCount: 0))
 }

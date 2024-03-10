@@ -10,6 +10,7 @@ import SwiftUI
 struct CreatePostView: View {
     @Environment(\.dismiss)  var dismiss
     @EnvironmentObject var dataAccess: DataAccess
+    @EnvironmentObject var fireDBHelper : SellingFireDBHelper
     
     // MARK: Input Variables
     @State private var titleIn: String = ""
@@ -80,9 +81,11 @@ struct CreatePostView: View {
                     showAlert = true
                 } else {
                     let currentUser = dataAccess.loggedInUser!
-                    let currentListing = Listing(id: 0, title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: currentUser, email: currentUser.email, phoneNumber: currentUser.phoneNumber, status: .available, favoriteCount: 0)
+                    let newMiniUser = MiniUser(name: currentUser.name, email: currentUser.email, phoneNumber: currentUser.phoneNumber)
+                    let currentListing = Listing(title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: newMiniUser, status: .available, favoriteCount: 0)
                     
-                    dataAccess.savePosts(post: currentListing)
+                    fireDBHelper.insert(newData: currentListing)
+//                    dataAccess.savePosts(post: currentListing)
                     dismiss()
                 }
             }label: {

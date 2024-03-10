@@ -255,12 +255,12 @@ struct CollectionListingsView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(collection.listings, id: \.id) { listing in
-                    NavigationLink(destination: ListingView(listing: listing)) {
-                        Text(listing.title)
-                    }
-                }
-                .onDelete(perform: deleteListing)
+//                ForEach(collection.listings, id: \.id) { listing in
+//                    NavigationLink(destination: ListingView(listing: listing)) {
+//                        Text(listing.title)
+//                    }
+//                }
+//                .onDelete(perform: deleteListing)
             }
             .navigationBarTitle(Text("Listings in \(collection.name)"))
         }
@@ -269,7 +269,7 @@ struct CollectionListingsView: View {
     func deleteListing(at offsets: IndexSet) {
         for index in offsets {
             let listing = collection.listings[index]
-            dataAccess.removeFromCollection(listing: listing, collection: collection)
+//            dataAccess.removeFromCollection(listing: listing, collection: collection)
         }
     }
 }

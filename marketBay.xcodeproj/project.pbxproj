@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		821BC5AF2B7B03E000798E22 /* GlobalVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = 821BC5AE2B7B03E000798E22 /* GlobalVars.swift */; };
 		990024552B7B2F9900F94DF7 /* BackMenuFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990024542B7B2F9900F94DF7 /* BackMenuFragment.swift */; };
 		990024572B7B4C7E00F94DF7 /* UserDefaultsEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990024562B7B4C7E00F94DF7 /* UserDefaultsEnum.swift */; };
 		990024592B7B515700F94DF7 /* DataAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990024582B7B515700F94DF7 /* DataAccess.swift */; };
@@ -79,7 +78,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		821BC5AE2B7B03E000798E22 /* GlobalVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalVars.swift; sourceTree = "<group>"; };
 		990024542B7B2F9900F94DF7 /* BackMenuFragment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackMenuFragment.swift; sourceTree = "<group>"; };
 		990024562B7B4C7E00F94DF7 /* UserDefaultsEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsEnum.swift; sourceTree = "<group>"; };
 		990024582B7B515700F94DF7 /* DataAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAccess.swift; sourceTree = "<group>"; };
@@ -268,7 +266,6 @@
 				A6B0BE632B7E25F7006A149A /* Collection.swift */,
 				998345BB2B8EAA8700C4DB8E /* Chatroom.swift */,
 				998345BD2B8EAAFA00C4DB8E /* Chat.swift */,
-				821BC5AE2B7B03E000798E22 /* GlobalVars.swift */,
 				A6B0BE5F2B7D811D006A149A /* SampleData.swift */,
 			);
 			path = Models;
@@ -422,7 +419,6 @@
 				998345BA2B8EA69F00C4DB8E /* MiniListing.swift in Sources */,
 				99B5E6EA2B75D5D700C0786A /* ProfileView.swift in Sources */,
 				A6B0BE0C2B7AAF7E006A149A /* MarketplaceView.swift in Sources */,
-				821BC5AF2B7B03E000798E22 /* GlobalVars.swift in Sources */,
 				998345AF2B8E8A3800C4DB8E /* FirebaseConstants.swift in Sources */,
 				99B5E6DB2B75CB0500C0786A /* DashboardView.swift in Sources */,
 				A6B0BE642B7E25F7006A149A /* Collection.swift in Sources */,

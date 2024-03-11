@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct MiniListing: Codable {
-//    @DocumentID var id: String? = UUID().uuidString
+struct MiniListing: Codable, Identifiable {
+    var id: String
     var title: String
     var status: String
     var price: Double

@@ -10,17 +10,13 @@ import SwiftUI
 
 struct MarketplaceView: View {
     @State private var selectedCategory: Category = .all
-    @EnvironmentObject var dataAccess: DataAccess
-    @State private var listings: [Listing] = []   // Property to hold the listings
+    @EnvironmentObject var sellingFireDBHelper: SellingFireDBHelper
     
     let categories: [Category] = [.all, .auto, .furniture, .electronics, .womensClothing, .mensClothing, .toys, .homeAndGarden]
 
     var body: some View {
         NavigationStack {
-            VStack {
-                // Menu Bar
-                MenuTemplate().environmentObject(dataAccess)
-                
+            VStack {                
                 // Horizontal Category Selector
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
@@ -45,7 +41,7 @@ struct MarketplaceView: View {
                 // Grid-like Display of Items
                ScrollView {
                    LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
-                       ForEach(listings.filter { $0.category == selectedCategory || selectedCategory == .all }) { listing in
+                       ForEach(sellingFireDBHelper.listings.filter { $0.category == selectedCategory || selectedCategory == .all }) { listing in
                                ItemView(listing: listing)
                            }
                    }
@@ -55,15 +51,12 @@ struct MarketplaceView: View {
             .padding()
         }
         .onAppear() {
-            //loadDummyData()
-            loadListings()
+            sellingFireDBHelper.getAll()
+        }
+        .onDisappear() {
+            sellingFireDBHelper.removeListener()
         }
     }
-    
-    func loadListings() {
-           listings = dataAccess.getPosts(idFilter: nil).filter { $0.status == .available }
-           dataAccess.loggedInUser = dataAccess.getLoggedInUser()
-       }
 
 }
 
@@ -95,12 +88,4 @@ struct ItemView: View {
         .background(Color.gray.opacity(0.1))
         .cornerRadius(10)
     }
-}
-
-
-#Preview {
-    let dataAccess = DataAccess() // Create a mock DataAccess object
-    dataAccess.loggedInUser = User(id: 1, name: "John Doe", email: "john@example.com", password: "password", phoneNumber: "123456789")
-
-    return MarketplaceView().environmentObject(dataAccess)
 }

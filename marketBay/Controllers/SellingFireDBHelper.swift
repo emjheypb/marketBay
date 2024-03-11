@@ -11,6 +11,8 @@ import FirebaseFirestore
 class SellingFireDBHelper: ObservableObject {
     @Published var listings = [Listing]()
     
+    private var listener: ListenerRegistration? = nil
+    
     private let db : Firestore
     init(db: Firestore) {
         self.db = db
@@ -27,13 +29,54 @@ class SellingFireDBHelper: ObservableObject {
     
     func insert(newData : Listing){
         do {
-            //  you don’t need to create a subcollection
-            //  you don’t need to ask user to sign up or sign in
             try self.db
                 .collection(FirebaseConstants.COLLECTION_LISTINGS.rawValue)
                 .addDocument(from: newData)
         } catch let err as NSError {
             print(#function, "ERROR: \(err)")
         }
+    }
+    
+    func getListingDetails(id: String) -> Listing? {
+        return listings.filter({$0.id == id}).first
+    }
+    
+    func getAll(){
+        listener = self.db
+            .collection(FirebaseConstants.COLLECTION_LISTINGS.rawValue)
+            .addSnapshotListener { querySnapshot, error in
+                guard let snapshot = querySnapshot else {
+                    print(#function, "FAILED TO RETRIEVE DATA: \(error)")
+                    return
+                }
+                
+                snapshot.documentChanges.forEach { documentChange in
+                    do {
+                        var listing : Listing = try documentChange.document.data(as: Listing.self)
+                        listing.id = documentChange.document.documentID
+                        
+                        let matchedIndex = self.listings.firstIndex(where: {($0.id?.elementsEqual(documentChange.document.documentID))!})
+                        
+                        switch(documentChange.type){
+                        case .added:
+                            self.listings.append(listing)
+                        case .modified:
+                            if(matchedIndex != nil) {
+                                self.listings[matchedIndex!] = listing
+                            }
+                        case .removed:
+                            if(matchedIndex != nil) {
+                                self.listings.remove(at: matchedIndex!)
+                            }
+                        }
+                    } catch let err as NSError {
+                        print(#function, "UNABLE TO CONVERT DATA: \(err)")
+                    }
+                }
+            }
+    }
+    
+    func removeListener() {
+        listener?.remove()
     }
 }

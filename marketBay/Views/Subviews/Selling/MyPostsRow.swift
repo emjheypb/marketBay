@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MyPostsRow: View {
-    var listing: Listing
+    var listing: MiniListing
     
     var body: some View {
         HStack {
@@ -18,7 +18,7 @@ struct MyPostsRow: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 50, height: 50)
             VStack(alignment: .leading) {
-                Text("# \(listing.id!)")
+                Text("# \(listing.id)")
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .font(.caption)
                     .foregroundColor(.gray)
@@ -29,8 +29,4 @@ struct MyPostsRow: View {
             Spacer()
         }
     }
-}
-
-#Preview {
-    MyPostsRow(listing: Listing(title: "Unlock! A Noside Story", description: "Secret Adventures: Part 1", category: .toys, price: 25.0, seller: MiniUser(name: "MJ", email: "mb", phoneNumber: "123"), status: .available, favoriteCount: 0))
 }

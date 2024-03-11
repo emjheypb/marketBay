@@ -13,8 +13,6 @@ import FirebaseFirestore
 
 @main
 struct marketBayApp: App {
-    @StateObject private var appRootManager = AppRootManager()
-    @StateObject private var dataAccess = DataAccess()
     
     init() {
         FirebaseApp.configure()
@@ -22,23 +20,7 @@ struct marketBayApp: App {
     
     var body: some Scene {
         WindowGroup {
-            Group {
-                switch appRootManager.currentRoot {
-                case .favoritesView:
-                    FavoritesView()
-                case .registrationView:
-                    RegistrationView()
-                case .myPostsView:
-                    MyPostsView()
-                case .profileView:
-                    ProfileView()
-                case .marketplaceView:
-                    MarketplaceView()
-                default:
-                    DashboardView()
-                }
-            }
-            .environmentObject(appRootManager).environmentObject(dataAccess)
+            MainView()
         }
     }
 }

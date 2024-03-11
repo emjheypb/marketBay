@@ -66,6 +66,8 @@
 		99DFA6EE2B9F93E400DEFC15 /* FirebaseRemoteConfigSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 99DFA6ED2B9F93E400DEFC15 /* FirebaseRemoteConfigSwift */; };
 		99DFA6F02B9F93E400DEFC15 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 99DFA6EF2B9F93E400DEFC15 /* FirebaseStorage */; };
 		99DFA6F22B9F93E400DEFC15 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 99DFA6F12B9F93E400DEFC15 /* FirebaseStorageCombine-Community */; };
+		99DFA6F42B9F9E8D00DEFC15 /* CameraPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DFA6F32B9F9E8D00DEFC15 /* CameraPicker.swift */; };
+		99DFA6F62B9F9E9A00DEFC15 /* PhotoLibraryPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DFA6F52B9F9E9900DEFC15 /* PhotoLibraryPicker.swift */; };
 		A6B0BE0C2B7AAF7E006A149A /* MarketplaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B0BE0B2B7AAF7E006A149A /* MarketplaceView.swift */; };
 		A6B0BE0E2B7AAFC0006A149A /* ListingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B0BE0D2B7AAFC0006A149A /* ListingView.swift */; };
 		A6B0BE112B7AB341006A149A /* Listing.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B0BE102B7AB341006A149A /* Listing.swift */; };
@@ -110,6 +112,8 @@
 		99B5E6E72B75D57F00C0786A /* MyPostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPostsView.swift; sourceTree = "<group>"; };
 		99B5E6E92B75D5D700C0786A /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		99DFA6AF2B9ECF1200DEFC15 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		99DFA6F32B9F9E8D00DEFC15 /* CameraPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPicker.swift; sourceTree = "<group>"; };
+		99DFA6F52B9F9E9900DEFC15 /* PhotoLibraryPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryPicker.swift; sourceTree = "<group>"; };
 		A6B0BE0B2B7AAF7E006A149A /* MarketplaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketplaceView.swift; sourceTree = "<group>"; };
 		A6B0BE0D2B7AAFC0006A149A /* ListingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingView.swift; sourceTree = "<group>"; };
 		A6B0BE102B7AB341006A149A /* Listing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Listing.swift; sourceTree = "<group>"; };
@@ -184,6 +188,8 @@
 				998345B12B8EA61300C4DB8E /* GeneralFireDBHelper.swift */,
 				998345B32B8EA63500C4DB8E /* AuthenticationFireDBHelper.swift */,
 				998345B52B8EA64200C4DB8E /* SellingFireDBHelper.swift */,
+				99DFA6F32B9F9E8D00DEFC15 /* CameraPicker.swift */,
+				99DFA6F52B9F9E9900DEFC15 /* PhotoLibraryPicker.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -434,8 +440,10 @@
 				99741F142B7D636400B6311F /* MultilineTextboxFragment.swift in Sources */,
 				99B5E6E82B75D57F00C0786A /* MyPostsView.swift in Sources */,
 				A6B0BE0E2B7AAFC0006A149A /* ListingView.swift in Sources */,
+				99DFA6F62B9F9E9A00DEFC15 /* PhotoLibraryPicker.swift in Sources */,
 				998345B62B8EA64200C4DB8E /* SellingFireDBHelper.swift in Sources */,
 				A6B0BE112B7AB341006A149A /* Listing.swift in Sources */,
+				99DFA6F42B9F9E8D00DEFC15 /* CameraPicker.swift in Sources */,
 				996334032B7AF55300E1EBAA /* PostView.swift in Sources */,
 				A6B0BE602B7D811D006A149A /* SampleData.swift in Sources */,
 				99B5E6E12B75CCBB00C0786A /* RegistrationView.swift in Sources */,
@@ -577,6 +585,9 @@
 				DEVELOPMENT_TEAM = W83ZFFV5H6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Allow access to upload photos taken with the Camera";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Allow access to Photo Library to save photos";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Allow access to upload photos from Photo Library";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -606,6 +617,9 @@
 				DEVELOPMENT_TEAM = W83ZFFV5H6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Allow access to upload photos taken with the Camera";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Allow access to Photo Library to save photos";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Allow access to upload photos from Photo Library";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

@@ -13,10 +13,20 @@ struct MyPostsRow: View {
     var body: some View {
         HStack {
             // Image, Title, Price
-            Image(systemName: "photo")
-                .resizable()
+            if(listing.image.isEmpty) {
+                Image(systemName: "photo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 50, height: 50)
+            } else {
+                AsyncImage(url: URL(string: listing.image)) {
+                    image in
+                    image.image?.resizable()
+                }
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 50, height: 50)
+            }
+            
             VStack(alignment: .leading) {
                 Text("# \(listing.id)")
                     .frame(maxWidth: .infinity, alignment: .leading)

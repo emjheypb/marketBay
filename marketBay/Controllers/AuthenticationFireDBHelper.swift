@@ -10,7 +10,7 @@ import FirebaseFirestore
 
 class AuthenticationFireDBHelper: ObservableObject {
     @Published var user: User?
-    private var listener: ListenerRegistration? = nil
+    var listener: ListenerRegistration? = nil
     
     private let db : Firestore
     init(db: Firestore) {

@@ -35,10 +35,19 @@ struct PostView: View {
             
             ScrollView {
                 // Placeholder image
-                Image(systemName: "photo")
-                    .resizable()
+                if(listing.image.isEmpty) {
+                    Image(systemName: "photo")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 250, height: 250)
+                } else {
+                    AsyncImage(url: URL(string: listing.image)) {
+                        image in
+                        image.image?.resizable()
+                    }
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 200, height: 200)
+                    .frame(width: 250, height: 250)
+                }
                 
                 Text("# \(listing.id!)")
                     .font(.title2)

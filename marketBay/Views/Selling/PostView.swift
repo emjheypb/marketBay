@@ -26,7 +26,7 @@ struct PostView: View {
     var listing: Listing
     
     var body: some View {
-        BackMenuFragment()
+        CustomBackFragment()
         VStack {
             // MARK: Header
             PageHeadingFragment(pageTitle: listing.title, padding: 0)

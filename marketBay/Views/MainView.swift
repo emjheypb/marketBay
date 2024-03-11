@@ -34,12 +34,6 @@ struct MainView: View {
                             Text("Login")
                             Image(systemName: "lock.fill")
                         }
-                        .onAppear() {
-                            fireAuthHelper.listenToAuthState()
-                        }
-                        .onDisappear() {
-                            fireAuthHelper.removeAuthStateListener()
-                        }
                     }
                     
                     // MARK: Root Screens Menu Items
@@ -68,6 +62,7 @@ struct MainView: View {
                     if(fireAuthHelper.user != nil) {
                         Button (role:.destructive) {
                             fireAuthHelper.signOut()
+                            appRootManager.currentRoot = .marketplaceView
                         } label:{
                             Text("Logout")
                             Image(systemName: "power")
@@ -83,10 +78,9 @@ struct MainView: View {
             }
             .padding([.top, .leading, .trailing])
             .onAppear() {
-                if let currUserEmail = UserDefaults.standard.string(forKey: UserDefaultsEnum.USER_EMAIL.rawValue) {
-                    authFireDBHelper.getUser(email: currUserEmail)
+                if(fireAuthHelper.listener == nil) {
+                    fireAuthHelper.listenToAuthState()
                 }
-                sellingFireDBHelper.getAll()
             }
             
             // MARK: Root Screens
@@ -99,6 +93,7 @@ struct MainView: View {
                 MyPostsView()
                     .environmentObject(sellingFireDBHelper)
                     .environmentObject(authFireDBHelper)
+                    .environmentObject(fireAuthHelper)
             case .profileView:
                 ProfileView()
             case .marketplaceView:

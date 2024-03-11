@@ -10,7 +10,7 @@ import FirebaseAuth
 
 class FireAuthHelper: ObservableObject{    
     @Published var user: FirebaseAuth.User?
-    private var listener: AuthStateDidChangeListenerHandle? = nil
+    var listener: AuthStateDidChangeListenerHandle? = nil
     
     func listenToAuthState() {
         listener = Auth.auth().addStateDidChangeListener { [weak self] _, user in
@@ -20,10 +20,6 @@ class FireAuthHelper: ObservableObject{
             
             self.user = user
         }
-    }
-    
-    func removeAuthStateListener() {
-        Auth.auth().removeStateDidChangeListener(listener!)
     }
     
     func signUp(email : String, password : String){

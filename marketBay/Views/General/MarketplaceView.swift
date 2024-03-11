@@ -51,10 +51,9 @@ struct MarketplaceView: View {
             .padding()
         }
         .onAppear() {
-            sellingFireDBHelper.getAll()
-        }
-        .onDisappear() {
-            sellingFireDBHelper.removeListener()
+            if(sellingFireDBHelper.listener == nil) {
+                sellingFireDBHelper.getAll()
+            }
         }
     }
 
@@ -67,10 +66,19 @@ struct ItemView: View {
         NavigationLink(destination: ListingView(listing: listing)) {
             VStack {
                 // Image and Title
-                Image(systemName: "photo") // Placeholder image
-                    .resizable()
+                if(listing.image.isEmpty) {
+                    Image(systemName: "photo") // Placeholder image
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 150, height: 150)
+                } else {
+                    AsyncImage(url: URL(string: listing.image)) {
+                        image in
+                        image.image?.resizable()
+                    }
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 150, height: 150)
+                }
                 Text(listing.title)
                     .font(.headline)
                     .multilineTextAlignment(.center)

@@ -7,11 +7,12 @@
 
 import Foundation
 import FirebaseFirestore
+import FirebaseStorage
 
 class SellingFireDBHelper: ObservableObject {
     @Published var listings = [Listing]()
     
-    private var listener: ListenerRegistration? = nil
+    var listener: ListenerRegistration? = nil
     
     private let db : Firestore
     init(db: Firestore) {
@@ -37,6 +38,41 @@ class SellingFireDBHelper: ObservableObject {
             print(#function, "ERROR: \(err)")
             completionHandler(nil, err)
         }
+    }
+    
+    func uploadImage(userEmail: String, newImage: UIImage, fileName: String, completionHandler: @escaping(String?, NSError?) -> Void) {
+        let storageRef = Storage.storage().reference()
+        
+        let imageData = newImage.jpegData(compressionQuality: 0.8)
+        let filePath = "\(userEmail)/\(fileName)"
+        let metaData = StorageMetadata()
+        metaData.contentType = "image/jpg"
+        
+        let imageRef = storageRef.child(filePath)
+        let upload = storageRef.child(filePath).putData(imageData!, metadata: metaData) { metadata, error in
+            guard let metadata = metadata else {
+                print(#function, "FAILED TO UPLOAD PHOTO: \(error)")
+                completionHandler(nil, error as NSError?)
+                return
+            }
+            
+            imageRef.downloadURL { url, error in
+                guard let downloadURL = url else {
+                    print(#function, "FAIALED TO GET DOWNLOAD URL: \(error)")
+                    completionHandler(nil, error as NSError?)
+                    return
+                }
+                
+                self.db
+                    .collection(FirebaseConstants.COLLECTION_LISTINGS.rawValue)
+                    .document(fileName)
+                    .updateData(["image" : downloadURL.absoluteString])
+                
+                completionHandler(downloadURL.absoluteString, nil)
+                print(#function, downloadURL)
+            }
+        }
+        
     }
     
     func getListingDetails(id: String) -> Listing? {
@@ -76,9 +112,5 @@ class SellingFireDBHelper: ObservableObject {
                     }
                 }
             }
-    }
-    
-    func removeListener() {
-        listener?.remove()
     }
 }

@@ -30,12 +30,6 @@ struct MenuTemplate: View {
                         Text("Login")
                         Image(systemName: "lock.fill")
                     }
-                    .onAppear() {
-                        fireAuthHelper.listenToAuthState()
-                    }
-                    .onDisappear() {
-                        fireAuthHelper.removeAuthStateListener()
-                    }
                 }
                 
                 // MARK: Root Screens Menu Items

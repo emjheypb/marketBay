@@ -10,41 +10,46 @@ import SwiftUI
 struct MyPostsView: View {
     @EnvironmentObject var sellingFireDBHelper : SellingFireDBHelper
     @EnvironmentObject var authFireDBHelper: AuthenticationFireDBHelper
+    @EnvironmentObject var fireAuthHelper: FireAuthHelper
     
     var body: some View {
         PageHeadingFragment(pageTitle: "My Posts")
         
         VStack {
             List {
-                if(authFireDBHelper.user!.listings.isEmpty) {
-                    Text("No Posts Available")
+                if let currUser = authFireDBHelper.user {
+                    if(currUser.listings.isEmpty) {
+                        Text("No Posts Available")
+                    } else {
+                        if(!currUser.listings.filter{$0.status == PostStatus.available.rawValue}.isEmpty) {
+                            Section(header: Text("Available")){
+                                ForEach(currUser.listings.filter{$0.status == PostStatus.available.rawValue}) { listing in
+                                    NavigationLink{
+                                        if let listingDetails = sellingFireDBHelper.getListingDetails(id: listing.id) {
+                                            PostView(listing: listingDetails)
+                                        }
+                                    }label:{
+                                        MyPostsRow(listing: listing)
+                                    }
+                                }
+                            }
+                        }
+                        if(!currUser.listings.filter{$0.status == PostStatus.offTheMarket.rawValue}.isEmpty) {
+                            Section(header: Text("Off the Market")){
+                                ForEach(currUser.listings.filter{$0.status == PostStatus.offTheMarket.rawValue}) { listing in
+                                    NavigationLink{
+                                        if let listingDetails = sellingFireDBHelper.getListingDetails(id: listing.id) {
+                                            PostView(listing: listingDetails)
+                                        }
+                                    }label:{
+                                        MyPostsRow(listing: listing)
+                                    }
+                                }
+                            }
+                        }
+                    }
                 } else {
-                    if(!authFireDBHelper.user!.listings.filter{$0.status == PostStatus.available.rawValue}.isEmpty) {
-                        Section(header: Text("Available")){
-                            ForEach(authFireDBHelper.user!.listings.filter{$0.status == PostStatus.available.rawValue}) { listing in
-                                NavigationLink{
-                                    if let listingDetails = sellingFireDBHelper.getListingDetails(id: listing.id) {
-                                        PostView(listing: listingDetails)
-                                    }
-                                }label:{
-                                    MyPostsRow(listing: listing)
-                                }
-                            }
-                        }
-                    }
-                    if(!authFireDBHelper.user!.listings.filter{$0.status == PostStatus.offTheMarket.rawValue}.isEmpty) {
-                        Section(header: Text("Off the Market")){
-                            ForEach(authFireDBHelper.user!.listings.filter{$0.status == PostStatus.offTheMarket.rawValue}) { listing in
-                                NavigationLink{
-                                    if let listingDetails = sellingFireDBHelper.getListingDetails(id: listing.id) {
-                                        PostView(listing: listingDetails)
-                                    }
-                                }label:{
-                                    MyPostsRow(listing: listing)
-                                }
-                            }
-                        }
-                    }
+                    Text("No Posts Available")
                 }
             }
             
@@ -56,6 +61,14 @@ struct MyPostsView: View {
             }
         }
         .padding()
+        .onAppear() {
+            if let currUser = fireAuthHelper.user {
+                authFireDBHelper.getUser(email: currUser.email!)
+            }
+        }
+        .onDisappear() {
+            authFireDBHelper.removeListener()
+        }
     }
 }
 

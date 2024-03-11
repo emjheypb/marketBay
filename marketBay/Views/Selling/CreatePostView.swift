@@ -23,7 +23,7 @@ struct CreatePostView: View {
     @State private var errorMessage = ""
     
     var body: some View {
-        BackMenuFragment()
+        CustomBackFragment()
         VStack {
             PageHeadingFragment(pageTitle: "New Post")
         

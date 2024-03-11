@@ -38,17 +38,33 @@ class AuthenticationFireDBHelper: ObservableObject {
         }
     }
     
+    func insertListing(newData : MiniListing) {
+        user?.listings.append(newData)
+        do {
+            try self.db
+                .collection(FirebaseConstants.COLLECTION_USERS.rawValue)
+                .document(user!.id!)
+                .setData(from: user)
+        } catch let err as NSError {
+            print(#function, "ERROR: \(err)")
+        }
+    }
+    
     func getUser(email: String){
         listener = self.db
-            .collection(FirebaseConstants.COLLECTION_LISTINGS.rawValue)
+            .collection(FirebaseConstants.COLLECTION_USERS.rawValue)
             .document(email)
             .addSnapshotListener { documentSnapshot, error in
-                guard let snapshot = documentSnapshot else {
+                guard let document = documentSnapshot else {
                     print(#function, "FAILED TO RETRIEVE DATA: \(error)")
                     return
                 }
+                guard let data = document.data() else {
+                    print(#function, "DOCUMENT IS EMPTY")
+                    return
+                }
                 do {
-                    self.user = try snapshot.data(as: User.self)
+                    self.user = try document.data(as: User.self)
                 } catch let err as NSError {
                     print(#function, "UNABLE TO CONVERT DATA: \(err)")
                 }

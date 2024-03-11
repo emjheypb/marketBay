@@ -67,7 +67,6 @@ struct MainView: View {
                     // MARK: Logout Menu Item
                     if(fireAuthHelper.user != nil) {
                         Button (role:.destructive) {
-                            authFireDBHelper.removeListener()
                             fireAuthHelper.signOut()
                         } label:{
                             Text("Logout")
@@ -84,6 +83,9 @@ struct MainView: View {
             }
             .padding([.top, .leading, .trailing])
             .onAppear() {
+                if let currUserEmail = UserDefaults.standard.string(forKey: UserDefaultsEnum.USER_EMAIL.rawValue) {
+                    authFireDBHelper.getUser(email: currUserEmail)
+                }
                 sellingFireDBHelper.getAll()
             }
             

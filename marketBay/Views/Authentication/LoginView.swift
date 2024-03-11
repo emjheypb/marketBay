@@ -9,8 +9,6 @@ import SwiftUI
 
 struct LoginView: View {
     @Environment(\.dismiss)  var dismiss
-    @EnvironmentObject private var appRootManager: AppRootManager
-    @EnvironmentObject var dataAccess: DataAccess
     
     @State private var rememberUserDetails: User?
     var selectedPage : Screens?
@@ -18,6 +16,10 @@ struct LoginView: View {
     @State private var passwordFromUI : String = ""
     @State private var rememberUser : Bool = false
     @State private var errorMessage : String = ""
+    
+    @EnvironmentObject var appRootManager: AppRootManager
+    @EnvironmentObject var fireAuthHelper: FireAuthHelper
+    @EnvironmentObject var authFireDBHelper: AuthenticationFireDBHelper
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10.0){
@@ -52,27 +54,26 @@ struct LoginView: View {
             HStack{
                 Spacer()
                 Button {
-                   validateLogin()
+                    validateLogin()
                 }label: {
                     Text("L O G I N")
                 }
                 Spacer()
             }
             NavigationLink {
-                RegistrationView()
+                RegistrationView().environmentObject(fireAuthHelper).environmentObject(authFireDBHelper)
             }label: {
                 Text("R E G I S T E R")
                     .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
             }
         }
         .padding()
-//        .navigationTitle(Text("LOGIN"))
-//        .navigationBarTitleDisplayMode(.inline)
+        //        .navigationTitle(Text("LOGIN"))
+        //        .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden()
         .onAppear(){
-            rememberUserDetails = dataAccess.getRememberUser()
-            emailFromUI = rememberUserDetails?.email ?? ""
-            passwordFromUI = rememberUserDetails?.password ?? ""
+            emailFromUI = UserDefaults.standard.string(forKey: UserDefaultsEnum.USER_EMAIL.rawValue) ?? ""
+            passwordFromUI = UserDefaults.standard.string(forKey: UserDefaultsEnum.USER_PASSWORD.rawValue) ?? ""
         }
     }
     
@@ -83,30 +84,39 @@ struct LoginView: View {
             return
         }
         //validate enterred credentials
-        guard let allUsersData = UserDefaults.standard.array(forKey: "allUsersData") as? [[String: Any]] else {
-            return
-        }
-        if let userData = allUsersData.first(where: { ($0["email"] as? String) == self.emailFromUI }) {
-            if userData["password"] as? String ?? "" == self.passwordFromUI {
-                self.errorMessage = ""
-                dataAccess.login(user: User(id: userData["id"] as! Int, name: userData["name"] as! String, email: userData["email"] as! String, password: userData["password"] as! String, phoneNumber: userData["phoneNumber"] as! String))
-                if self.rememberUser{
-                    dataAccess.rememberUser(user: User(id: userData["id"] as! Int, name: userData["name"] as! String, email: userData["email"] as! String, password: userData["password"] as! String, phoneNumber: userData["phoneNumber"] as! String))
-                }
-                else{
-                    dataAccess.forgetUser()
-                }
+        //        guard let allUsersData = UserDefaults.standard.array(forKey: "allUsersData") as? [[String: Any]] else {
+        //            return
+        //        }
+        //        if let userData = allUsersData.first(where: { ($0["email"] as? String) == self.emailFromUI }) {
+        //            if userData["password"] as? String ?? "" == self.passwordFromUI {
+        //                self.errorMessage = ""
+        //                dataAccess.login(user: User(id: userData["id"] as! Int, name: userData["name"] as! String, email: userData["email"] as! String, password: userData["password"] as! String, phoneNumber: userData["phoneNumber"] as! String))
+        //                if self.rememberUser{
+        //                    dataAccess.rememberUser(user: User(id: userData["id"] as! Int, name: userData["name"] as! String, email: userData["email"] as! String, password: userData["password"] as! String, phoneNumber: userData["phoneNumber"] as! String))
+        //                }
+        //                else{
+        //                    dataAccess.forgetUser()
+        //                }
+        //                appRootManager.currentRoot = selectedPage ?? .marketplaceView
+        //                dismiss()
+        //            }
+        //            else{
+        //                self.errorMessage = "Incorrect Password"
+        //                return
+        //            }
+        //        }
+        //        else{
+        //            self.errorMessage = "Invalid Credentials"
+        //            return
+        //        }
+        
+        fireAuthHelper.signIn(email: emailFromUI, password: passwordFromUI) { user , error in
+            if(error != nil) {
+                self.errorMessage = "Invalid Credentials"
+            } else {
                 appRootManager.currentRoot = selectedPage ?? .marketplaceView
                 dismiss()
             }
-            else{
-                self.errorMessage = "Incorrect Password"
-                return
-            }
-        }
-        else{
-            self.errorMessage = "Invalid Credentials"
-            return
         }
     }
 }

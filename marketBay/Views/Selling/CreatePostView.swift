@@ -9,7 +9,8 @@ import SwiftUI
 
 struct CreatePostView: View {
     @Environment(\.dismiss)  var dismiss
-    @EnvironmentObject var dataAccess: DataAccess
+    @EnvironmentObject var sellingFireDBHelper : SellingFireDBHelper
+    @EnvironmentObject var authFireDBHelper : AuthenticationFireDBHelper
     
     // MARK: Input Variables
     @State private var titleIn: String = ""
@@ -22,7 +23,7 @@ struct CreatePostView: View {
     @State private var errorMessage = ""
     
     var body: some View {
-        BackMenuFragment().environmentObject(dataAccess)
+        BackMenuFragment()
         VStack {
             PageHeadingFragment(pageTitle: "New Post")
         
@@ -79,11 +80,21 @@ struct CreatePostView: View {
                 if(!errorMessage.isEmpty) {
                     showAlert = true
                 } else {
-                    let currentUser = dataAccess.loggedInUser!
-                    let currentListing = Listing(id: 0, title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: currentUser, email: currentUser.email, phoneNumber: currentUser.phoneNumber, status: .available, favoriteCount: 0)
-                    
-                    dataAccess.savePosts(post: currentListing)
-                    dismiss()
+                    if let currentUser = authFireDBHelper.user {
+                        let newMiniUser = MiniUser(name: currentUser.name, email: currentUser.id!, phoneNumber: currentUser.phoneNumber)
+                        let newListing = Listing(title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: newMiniUser, status: .available, favoriteCount: 0)
+                        
+                        sellingFireDBHelper.insert(newData: newListing) { listingID, err in
+                            if let currID = listingID {
+                                let newMiniListing = MiniListing(id: currID, title: newListing.title, status: newListing.status.rawValue, price: newListing.price)
+                                authFireDBHelper.insertListing(newData: newMiniListing)
+                                dismiss()
+                            } else {
+                                errorMessage += "Error Adding Posting. Try Again."
+                                showAlert = true
+                            }
+                        }
+                    }
                 }
             }label: {
                 Text("P O S T")

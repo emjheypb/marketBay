@@ -6,30 +6,26 @@
 //
 
 import Foundation
+import FirebaseFirestoreSwift
 
 struct Listing: Codable, Identifiable {
-    var id: Int
+    @DocumentID var id: String? = UUID().uuidString
     let title: String
     let description: String
     let category: Category
     let price: Double
-    let seller: User
-    let email: String
-    let phoneNumber: String
     var status: PostStatus
     var favoriteCount: Int // track the number of favorites
+    let seller: MiniUser
 
     
     // Initializer
-    init(id: Int, title: String, description: String, category: Category, price: Double, seller: User, email: String, phoneNumber: String, status: PostStatus, favoriteCount: Int) {
-        self.id = id
+    init(title: String, description: String, category: Category, price: Double, seller: MiniUser, status: PostStatus, favoriteCount: Int) {
         self.title = title
         self.description = description
         self.category = category
         self.price = price
         self.seller = seller
-        self.email = email
-        self.phoneNumber = phoneNumber
         self.status = status
         self.favoriteCount = 0
     }

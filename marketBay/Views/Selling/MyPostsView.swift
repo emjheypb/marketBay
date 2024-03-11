@@ -8,34 +8,38 @@
 import SwiftUI
 
 struct MyPostsView: View {
-    @EnvironmentObject var dataAccess: DataAccess
+    @EnvironmentObject var sellingFireDBHelper : SellingFireDBHelper
+    @EnvironmentObject var authFireDBHelper: AuthenticationFireDBHelper
     
     var body: some View {
         NavigationStack() {
-            MenuTemplate().environmentObject(dataAccess)
             PageHeadingFragment(pageTitle: "My Posts")
             
             VStack {
                 List {
-                    if(dataAccess.loggedInUserPostings.isEmpty) {
+                    if(authFireDBHelper.user!.listings.isEmpty) {
                         Text("No Posts Available")
                     } else {
-                        if(!dataAccess.loggedInUserPostings.filter{$0.status == .available}.isEmpty) {
+                        if(!authFireDBHelper.user!.listings.filter{$0.status == PostStatus.available.rawValue}.isEmpty) {
                             Section(header: Text("Available")){
-                                ForEach(dataAccess.loggedInUserPostings.filter{$0.status == .available}) { listing in
+                                ForEach(authFireDBHelper.user!.listings.filter{$0.status == PostStatus.available.rawValue}) { listing in
                                     NavigationLink{
-                                        PostView(listing: listing).environmentObject(dataAccess)
+                                        if let listingDetails = sellingFireDBHelper.getListingDetails(id: listing.id) {
+                                            PostView(listing: listingDetails)
+                                        }
                                     }label:{
                                         MyPostsRow(listing: listing)
                                     }
                                 }
                             }
                         }
-                        if(!dataAccess.loggedInUserPostings.filter{$0.status == .offTheMarket}.isEmpty) {
+                        if(!authFireDBHelper.user!.listings.filter{$0.status == PostStatus.offTheMarket.rawValue}.isEmpty) {
                             Section(header: Text("Off the Market")){
-                                ForEach(dataAccess.loggedInUserPostings.filter{$0.status == .offTheMarket}) { listing in
+                                ForEach(authFireDBHelper.user!.listings.filter{$0.status == PostStatus.offTheMarket.rawValue}) { listing in
                                     NavigationLink{
-                                        PostView(listing: listing)
+                                        if let listingDetails = sellingFireDBHelper.getListingDetails(id: listing.id) {
+                                            PostView(listing: listingDetails)
+                                        }
                                     }label:{
                                         MyPostsRow(listing: listing)
                                     }
@@ -45,7 +49,7 @@ struct MyPostsView: View {
                     }
                 }
 
-                NavigationLink(destination: CreatePostView().environmentObject(dataAccess)) {
+                NavigationLink(destination: CreatePostView().environmentObject(sellingFireDBHelper).environmentObject(authFireDBHelper)) {
                     Image(systemName: "plus.circle.fill")
                         .resizable()
                         .scaledToFit()

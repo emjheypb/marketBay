@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MyPostsRow: View {
-    var listing: Listing
+    var listing: MiniListing
     
     var body: some View {
         HStack {
@@ -29,8 +29,4 @@ struct MyPostsRow: View {
             Spacer()
         }
     }
-}
-
-#Preview {
-    MyPostsRow(listing: Listing(id: 1, title: "Unlock! A Noside Story", description: "Secret Adventures: Part 1", category: .toys, price: 25.0, seller: User(id: 1, name: "MJ", email: "mb", password: "mb", phoneNumber: "123"), email: "users[0].email", phoneNumber: "users[0].phoneNumber", status: .available, favoriteCount: 0))
 }

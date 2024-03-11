@@ -12,5 +12,5 @@ struct MiniListing: Codable, Identifiable {
     var title: String
     var status: String
     var price: Double
-    var image: String
+//    var image: String
 }

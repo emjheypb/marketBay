@@ -27,13 +27,15 @@ class SellingFireDBHelper: ObservableObject {
         return shared!
     }
     
-    func insert(newData : Listing){
+    func insert(newData : Listing, completionHandler: @escaping(String?, NSError?) -> Void) {
         do {
-            try self.db
+            let document = try self.db
                 .collection(FirebaseConstants.COLLECTION_LISTINGS.rawValue)
                 .addDocument(from: newData)
+            completionHandler(document.documentID, nil)
         } catch let err as NSError {
             print(#function, "ERROR: \(err)")
+            completionHandler(nil, err)
         }
     }
     

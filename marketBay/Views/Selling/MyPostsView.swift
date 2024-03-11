@@ -49,7 +49,7 @@ struct MyPostsView: View {
                     }
                 }
 
-                NavigationLink(destination: CreatePostView().environmentObject(sellingFireDBHelper)) {
+                NavigationLink(destination: CreatePostView().environmentObject(sellingFireDBHelper).environmentObject(authFireDBHelper)) {
                     Image(systemName: "plus.circle.fill")
                         .resizable()
                         .scaledToFit()

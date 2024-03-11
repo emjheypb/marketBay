@@ -115,7 +115,6 @@ struct LoginView: View {
                 self.errorMessage = "Invalid Credentials"
             } else {
                 appRootManager.currentRoot = selectedPage ?? .marketplaceView
-                authFireDBHelper.getUser(email: emailFromUI)
                 dismiss()
             }
         }

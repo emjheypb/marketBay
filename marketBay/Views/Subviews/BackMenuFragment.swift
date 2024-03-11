@@ -33,39 +33,35 @@ struct BackMenuFragment: View {
             
             Spacer()
             
-            Menu {
-                // MARK: Root Screens Menu Items
-                let rootScreens = appRootManager.rootScreens
-                ForEach(rootScreens.indices) { index in
-                    if(appRootManager.currentRoot != rootScreens[index].1) {
-                        Button {
-                            appRootManager.currentRoot = rootScreens[index].1
-                        } label: {
-                            Text(rootScreens[index].0)
-                            Image(systemName: rootScreens[index].2)
-                        }
-                    }
-                }
-                
-                // MARK: Logout Menu Item
-                Button (role:.destructive) {
-                    dataAccess.logout()
-                    appRootManager.currentRoot = appRootManager.homePage
-                } label:{
-                    Text("Logout")
-                    Image(systemName: "power")
-                }
-            } label: {
-                Image(systemName: "line.3.horizontal")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 24, height: 24)
-                    .foregroundColor(.black)
-            }
+//            Menu {
+//                // MARK: Root Screens Menu Items
+//                let rootScreens = appRootManager.rootScreens
+//                ForEach(rootScreens.indices) { index in
+//                    if(appRootManager.currentRoot != rootScreens[index].1) {
+//                        Button {
+//                            appRootManager.currentRoot = rootScreens[index].1
+//                        } label: {
+//                            Text(rootScreens[index].0)
+//                            Image(systemName: rootScreens[index].2)
+//                        }
+//                    }
+//                }
+//                
+//                // MARK: Logout Menu Item
+//                Button (role:.destructive) {
+//                    dataAccess.logout()
+//                    appRootManager.currentRoot = appRootManager.homePage
+//                } label:{
+//                    Text("Logout")
+//                    Image(systemName: "power")
+//                }
+//            } label: {
+//                Image(systemName: "line.3.horizontal")
+//                    .resizable()
+//                    .scaledToFit()
+//                    .frame(width: 24, height: 24)
+//                    .foregroundColor(.black)
+//            }
         }
     }
-}
-
-#Preview {
-    BackMenuFragment()
 }

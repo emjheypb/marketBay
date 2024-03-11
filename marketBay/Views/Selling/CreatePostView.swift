@@ -81,7 +81,7 @@ struct CreatePostView: View {
                     showAlert = true
                 } else {
                     let currentUser = dataAccess.loggedInUser!
-                    let newMiniUser = MiniUser(name: currentUser.name, email: currentUser.email, phoneNumber: currentUser.phoneNumber)
+                    let newMiniUser = MiniUser(name: currentUser.name, email: currentUser.id!, phoneNumber: currentUser.phoneNumber)
                     let currentListing = Listing(title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: newMiniUser, status: .available, favoriteCount: 0)
                     
                     fireDBHelper.insert(newData: currentListing)

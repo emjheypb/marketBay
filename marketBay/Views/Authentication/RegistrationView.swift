@@ -9,6 +9,8 @@ import SwiftUI
 
 struct RegistrationView: View {
     @Environment(\.dismiss)  var dismiss
+    @EnvironmentObject var fireAuthHelper : FireAuthHelper
+    @EnvironmentObject var authDBHelper : AuthenticationFireDBHelper
     
     @State private var emailFromUI : String = ""
     @State private var nameFromUI : String = ""
@@ -63,18 +65,12 @@ struct RegistrationView: View {
             }
         }
         .padding()
-//        .navigationTitle("REGISTRATION")
-//        .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden()
     }
     
     func validateRegistration(){
         let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
         let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
-        
-        guard let allUsersData = UserDefaults.standard.array(forKey: "allUsersData") as? [[String: Any]] else {
-            return
-        }
         
         //empty field validation
         if self.nameFromUI.isEmpty || self.emailFromUI.isEmpty || self.passwordFromUI.isEmpty || self.phoneNumberFromUI.isEmpty {
@@ -96,16 +92,12 @@ struct RegistrationView: View {
             self.errorMessage = "Weak Password. Length should be greater than 6 characters."
             return
         }
-        //check if email is already registered
-        else if let userData = allUsersData.first(where: { ($0["email"] as? String) == self.emailFromUI }) {
-            self.errorMessage = "\(self.emailFromUI) is already a registered user. Please try with a different email."
-            return
-        }
         //register user
         else{
-            let user = User(id: GlobalVars.userID, name: self.nameFromUI, email: self.emailFromUI, password: self.passwordFromUI, phoneNumber: self.phoneNumberFromUI)
-            GlobalVars.userID += 1
+            let user = User(id: self.emailFromUI, name: self.nameFromUI, phoneNumber: self.phoneNumberFromUI)
             self.errorMessage = ""
+            self.authDBHelper.insert(newData: user)
+            self.fireAuthHelper.signUp(email: emailFromUI, password: passwordFromUI)
             dismiss()
         }
     }

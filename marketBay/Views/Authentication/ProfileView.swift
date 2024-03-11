@@ -90,11 +90,11 @@ struct ProfileView: View {
         }
         .padding()
         .onAppear(){
-            loggedInUser = dataAccess.getLoggedInUser()
-            emailFromUI = loggedInUser?.email ?? ""
-            nameFromUI = loggedInUser?.name ?? ""
-            passwordFromUI = loggedInUser?.password ?? ""
-            phoneNumberFromUI = loggedInUser?.phoneNumber ?? ""
+//            loggedInUser = dataAccess.getLoggedInUser()
+//            emailFromUI = loggedInUser?.email ?? ""
+//            nameFromUI = loggedInUser?.name ?? ""
+//            passwordFromUI = loggedInUser?.password ?? ""
+//            phoneNumberFromUI = loggedInUser?.phoneNumber ?? ""
         }
     }
     
@@ -119,7 +119,7 @@ struct ProfileView: View {
         }
         //update user
         else{
-            self.loggedInUser?.updateProfile(self.nameFromUI, self.passwordFromUI, self.phoneNumberFromUI)
+//            self.loggedInUser?.updateProfile(self.nameFromUI, self.passwordFromUI, self.phoneNumberFromUI)
             self.errorMessage = ""
             self.successMessage = "Profile Updated Successfully"
             dataAccess.saveUser(loggedInUser!)

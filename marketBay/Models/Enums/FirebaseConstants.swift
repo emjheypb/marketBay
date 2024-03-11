@@ -8,6 +8,7 @@
 import Foundation
 
 enum FirebaseConstants: String {
+    // MARK: USERS
     case COLLECTION_USERS = "Users"
     case COLLECTION_USER_LISTINGS = "User_Listings"
     case COLLECTION_USER_FAVORITES = "User_Favorites"
@@ -68,6 +69,7 @@ enum FirebaseConstants: String {
      }
      */
     
+    // MARK: LISTINGS
     case COLLECTION_LISTINGS = "Listings"
     case FIELD_LISTING_TITLE = "title"
     case FIELD_LISTING_DESCRIPTION = "description"
@@ -90,6 +92,7 @@ enum FirebaseConstants: String {
      }
      */
     
+    // MARK: CHATROOMS
     case COLLECTION_CHATROOMS = "Chatrooms"
     /*
      "Chatrooms" : {
@@ -103,6 +106,7 @@ enum FirebaseConstants: String {
      }
      */
     
+    // MARK: CHATS
     case COLLECITON_CHATS = "Chats"
     /*
      "Chats" : {

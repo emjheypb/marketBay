@@ -10,7 +10,7 @@ import SwiftUI
 
 struct MenuTemplate: View {
     @EnvironmentObject private var appRootManager: AppRootManager
-    @EnvironmentObject var dataAccess: DataAccess
+    @EnvironmentObject var fireAuthHelper: FireAuthHelper
     
     var body: some View {
         HStack {
@@ -25,10 +25,16 @@ struct MenuTemplate: View {
             Menu {
                 // MARK: Login Menu Item
                 // show if user is not logged in
-                if(dataAccess.loggedInUser == nil) {
-                    NavigationLink(destination: LoginView().environmentObject(dataAccess).environmentObject(appRootManager)) {
+                if(fireAuthHelper.user == nil) {
+                    NavigationLink(destination: LoginView().environmentObject(appRootManager).environmentObject(fireAuthHelper)) {
                         Text("Login")
                         Image(systemName: "lock.fill")
+                    }
+                    .onAppear() {
+                        fireAuthHelper.listenToAuthState()
+                    }
+                    .onDisappear() {
+                        fireAuthHelper.removeAuthStateListener()
                     }
                 }
                 
@@ -36,7 +42,7 @@ struct MenuTemplate: View {
                 let rootScreens = appRootManager.rootScreens
                 ForEach(rootScreens.indices) { index in
                     if (appRootManager.currentRoot != rootScreens[index].1) {
-                        if(dataAccess.loggedInUser != nil) {
+                        if(fireAuthHelper.user != nil) {
                             // change Root View
                             Button {
                                 appRootManager.currentRoot = rootScreens[index].1
@@ -46,7 +52,7 @@ struct MenuTemplate: View {
                             }
                         } else {
                             // navigate to LoginView
-                            NavigationLink(destination: LoginView(selectedPage: rootScreens[index].1).environmentObject(dataAccess).environmentObject(appRootManager)) {
+                            NavigationLink(destination: LoginView(selectedPage: rootScreens[index].1).environmentObject(appRootManager)) {
                                 Text(rootScreens[index].0)
                                 Image(systemName: rootScreens[index].2)
                             }
@@ -55,10 +61,9 @@ struct MenuTemplate: View {
                 }
                 
                 // MARK: Logout Menu Item
-                if(dataAccess.loggedInUser != nil) {
+                if(fireAuthHelper.user != nil) {
                     Button (role:.destructive) {
-                        dataAccess.logout()
-                        appRootManager.currentRoot = appRootManager.homePage
+                        fireAuthHelper.signOut()
                     } label:{
                         Text("Logout")
                         Image(systemName: "power")

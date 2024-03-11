@@ -64,7 +64,7 @@ struct ItemView: View {
     let listing: Listing // Add a property to hold the listing information
 
     var body: some View {
-        NavigationLink(destination: ListingView(listing: listing).environmentObject(DataAccess())) {
+        NavigationLink(destination: ListingView(listing: listing)) {
             VStack {
                 // Image and Title
                 Image(systemName: "photo") // Placeholder image

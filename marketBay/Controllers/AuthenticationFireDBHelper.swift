@@ -40,14 +40,19 @@ class AuthenticationFireDBHelper: ObservableObject {
     
     func insertListing(newData : MiniListing) {
         user?.listings.append(newData)
-        do {
-            try self.db
-                .collection(FirebaseConstants.COLLECTION_USERS.rawValue)
-                .document(user!.id!)
-                .setData(from: user)
-        } catch let err as NSError {
-            print(#function, "ERROR: \(err)")
+        self.insert(newData: user!)
+    }
+    
+    func updateMiniListing(newData: Listing) {
+        for index in 0...user!.listings.count - 1 {
+            if(user!.listings[index].id == newData.id) {
+                user!.listings[index].title = newData.title
+                user!.listings[index].price = newData.price
+                user!.listings[index].status = newData.status.rawValue
+                user!.listings[index].image = newData.image
+            }
         }
+        self.insert(newData: user!)
     }
     
     func getUser(email: String){

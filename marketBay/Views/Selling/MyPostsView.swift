@@ -26,7 +26,7 @@ struct MyPostsView: View {
                                 ForEach(currUser.listings.filter{$0.status == PostStatus.available.rawValue}) { listing in
                                     NavigationLink{
                                         if let listingDetails = sellingFireDBHelper.getListingDetails(id: listing.id) {
-                                            PostView(listing: listingDetails)
+                                            PostView(listing: listingDetails).environmentObject(sellingFireDBHelper).environmentObject(authFireDBHelper)
                                         }
                                     }label:{
                                         MyPostsRow(listing: listing)

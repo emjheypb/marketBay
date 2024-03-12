@@ -80,6 +80,7 @@ enum FirebaseConstants: String {
     case FIELD_LISTING_MINI_USER_NAME = "name"
     case FIELD_LISTING_MINI_USER_EMAIL = "email"
     case FIELD_LISTING_MINI_USER_PHONE = "phone"
+    case FIELD_LISTING_IMAGE = "image"
     /*
      "Listings" : {
         "listingID1" : {

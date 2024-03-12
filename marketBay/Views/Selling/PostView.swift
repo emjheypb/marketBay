@@ -9,13 +9,15 @@ import SwiftUI
 
 struct PostView: View {
     @Environment(\.dismiss)  var dismiss
-    @EnvironmentObject var dataAccess: DataAccess
+    @EnvironmentObject var sellingFireDBHelper : SellingFireDBHelper
+    @EnvironmentObject var authFireDBHelper : AuthenticationFireDBHelper
     
     // MARK: Input Variables
     @State private var titleIn: String = ""
     @State private var descriptionIn: String = ""
     @State private var categoryIn: Category = .auto
     @State private var priceIn: String = ""
+    @State private var listingImage : UIImage?
     
     // MARK: Output Variables
     @State private var showUpdateAlert: Bool = false
@@ -35,19 +37,7 @@ struct PostView: View {
             
             ScrollView {
                 // Placeholder image
-                if(listing.image.isEmpty) {
-                    Image(systemName: "photo")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 250, height: 250)
-                } else {
-                    AsyncImage(url: URL(string: listing.image)) {
-                        image in
-                        image.image?.resizable()
-                    }
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 250, height: 250)
-                }
+                UploadPhotoSubview(listingImage: $listingImage, imageURL: listing.image, isDisabled: listing.status == PostStatus.offTheMarket)
                 
                 Text("# \(listing.id!)")
                     .font(.title2)
@@ -97,6 +87,7 @@ struct PostView: View {
                         
                         errorMessage += titleIn.isEmpty ? "\n• Title" : ""
                         errorMessage += priceIn.isEmpty || Double(priceIn) == nil ? "\n• Price" : ""
+                        errorMessage += listingImage == nil && listing.image.isEmpty ? "\n• Image" : ""
                         
                         // MARK: Success
                         if(!errorMessage.isEmpty) {
@@ -116,11 +107,22 @@ struct PostView: View {
                             )
                         } else {
                             Alert(
-                                title: Text("There's no turning back!"),
-                                message: Text("Are you sure you want to update this post?"),
+                                title: Text("Update Listing Details"),
+                                message: Text("Are you sure you want to update?"),
                                 primaryButton: .default(Text("Update")) {
-                                    let listingToUpdate = Listing(title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: listing.seller, status: listing.status, favoriteCount: 0)
-                                    dataAccess.savePosts(post: listingToUpdate, isUpdate: true)
+                                    var updatedListing = Listing(id: listing.id!, title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: listing.seller, status: listing.status, favoriteCount: listing.favoriteCount, image: listing.image)
+                                    if let image = listingImage {
+                                        sellingFireDBHelper.updateImage(newData: updatedListing, newImage: image) { imageDownloadURL, error in
+                                            if let imageURL = imageDownloadURL {
+                                                updatedListing.image = imageURL
+                                                authFireDBHelper.updateMiniListing(newData: updatedListing)
+                                            }
+                                        }
+                                    } else {
+                                        sellingFireDBHelper.update(newData: updatedListing)
+                                        authFireDBHelper.updateMiniListing(newData: updatedListing)
+                                    }
+                                    
                                     dismiss()
                                 },
                                 secondaryButton: .destructive(Text("Cancel"))
@@ -141,9 +143,9 @@ struct PostView: View {
                             title: Text("There's no turning back!"),
                             message: Text("Are you sure you want to take this off the market?"),
                             primaryButton: .destructive(Text("Take Off the Market")) {
-                                var listingToUpdate = listing
-                                listingToUpdate.status = .offTheMarket
-                                dataAccess.savePosts(post: listingToUpdate, isUpdate: true)
+                                let updatedListing = Listing(id: listing.id!, title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: listing.seller, status: PostStatus.offTheMarket, favoriteCount: listing.favoriteCount, image: listing.image)
+                                sellingFireDBHelper.update(newData: updatedListing)
+                                authFireDBHelper.updateMiniListing(newData: updatedListing)
                                 dismiss()
                             },
                             secondaryButton: .cancel()

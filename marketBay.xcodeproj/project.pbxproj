@@ -68,6 +68,7 @@
 		99DFA6F22B9F93E400DEFC15 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 99DFA6F12B9F93E400DEFC15 /* FirebaseStorageCombine-Community */; };
 		99DFA6F42B9F9E8D00DEFC15 /* CameraPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DFA6F32B9F9E8D00DEFC15 /* CameraPicker.swift */; };
 		99DFA6F62B9F9E9A00DEFC15 /* PhotoLibraryPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DFA6F52B9F9E9900DEFC15 /* PhotoLibraryPicker.swift */; };
+		99DFA6F82B9FC9A600DEFC15 /* UploadPhotoSubview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DFA6F72B9FC9A600DEFC15 /* UploadPhotoSubview.swift */; };
 		A6B0BE0C2B7AAF7E006A149A /* MarketplaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B0BE0B2B7AAF7E006A149A /* MarketplaceView.swift */; };
 		A6B0BE0E2B7AAFC0006A149A /* ListingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B0BE0D2B7AAFC0006A149A /* ListingView.swift */; };
 		A6B0BE112B7AB341006A149A /* Listing.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B0BE102B7AB341006A149A /* Listing.swift */; };
@@ -114,6 +115,7 @@
 		99DFA6AF2B9ECF1200DEFC15 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		99DFA6F32B9F9E8D00DEFC15 /* CameraPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPicker.swift; sourceTree = "<group>"; };
 		99DFA6F52B9F9E9900DEFC15 /* PhotoLibraryPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryPicker.swift; sourceTree = "<group>"; };
+		99DFA6F72B9FC9A600DEFC15 /* UploadPhotoSubview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPhotoSubview.swift; sourceTree = "<group>"; };
 		A6B0BE0B2B7AAF7E006A149A /* MarketplaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketplaceView.swift; sourceTree = "<group>"; };
 		A6B0BE0D2B7AAFC0006A149A /* ListingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingView.swift; sourceTree = "<group>"; };
 		A6B0BE102B7AB341006A149A /* Listing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Listing.swift; sourceTree = "<group>"; };
@@ -176,6 +178,7 @@
 			isa = PBXGroup;
 			children = (
 				99741F0D2B7D4E1300B6311F /* MyPostsRow.swift */,
+				99DFA6F72B9FC9A600DEFC15 /* UploadPhotoSubview.swift */,
 			);
 			path = Selling;
 			sourceTree = "<group>";
@@ -417,6 +420,7 @@
 				998345BC2B8EAA8700C4DB8E /* Chatroom.swift in Sources */,
 				99B5E6DD2B75CC3700C0786A /* MenuTemplate.swift in Sources */,
 				990024572B7B4C7E00F94DF7 /* UserDefaultsEnum.swift in Sources */,
+				99DFA6F82B9FC9A600DEFC15 /* UploadPhotoSubview.swift in Sources */,
 				998345B82B8EA65000C4DB8E /* FireAuthHelper.swift in Sources */,
 				998345BA2B8EA69F00C4DB8E /* MiniListing.swift in Sources */,
 				99B5E6EA2B75D5D700C0786A /* ProfileView.swift in Sources */,

@@ -22,10 +22,6 @@ struct CreatePostView: View {
     
     // MARK: Output Variables
     @State private var showAlert: Bool = false
-    @State private var showSheet: Bool = false
-    @State private var permissionGranted: Bool = false
-    @State private var showPicker : Bool = false
-    @State private var isUsingCamera : Bool = false
     @State private var errorMessage = ""
     
     var body: some View {
@@ -67,55 +63,8 @@ struct CreatePostView: View {
                 // Description
                 MultilineTextboxFragment(fieldName: "Description", placeholder: "Description", binding: $descriptionIn)
                 
-                // Placeholder image
-                Button {
-                    if(self.permissionGranted) {
-                        self.showSheet = true
-                    } else {
-                        self.checkPermission()
-                    }
-                } label: {
-                    Image(uiImage: listingImage ?? UIImage(systemName: "photo")!)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 250, height: 250)
-                }
-                .actionSheet(isPresented: self.$showSheet){
-                    ActionSheet(title: Text("Select Photo"),
-                                message: Text("Choose profile picture to upload"),
-                                buttons: [
-                                    .default(Text("Choose photo from library")){
-                                        //show library picture picker
-                                        guard UIImagePickerController.isSourceTypeAvailable(.photoLibrary) else {
-                                            print(#function, "No Library Access")
-                                            return
-                                        }
-                                        
-                                        self.isUsingCamera = false
-                                        self.showPicker = true
-                                    },
-                                    .default(Text("Take a new pic from Camera")){
-                                        //open camera
-                                        guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
-                                            print(#function, "No Camera Access")
-                                            return
-                                        }
-                                        
-                                        self.isUsingCamera = true
-                                        self.showPicker = true
-                                    },
-                                    .cancel()
-                                ])
-                }
-            }
-            .fullScreenCover(isPresented: self.$showPicker){
-                if (isUsingCamera){
-                    //open camera Picker
-                    CameraPicker(selectedImage: self.$listingImage)
-                }else{
-                    //open library picker
-                    PhotoLibraryPicker(selectedImage: self.$listingImage)
-                }
+                // Listing Image
+                UploadPhotoSubview(listingImage: $listingImage, imageURL: "")
             }
             
             Spacer()
@@ -136,13 +85,16 @@ struct CreatePostView: View {
                         let newMiniUser = MiniUser(name: currentUser.name, email: currentUser.id!, phoneNumber: currentUser.phoneNumber)
                         let newListing = Listing(title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: newMiniUser, status: .available, favoriteCount: 0)
                         
+                        // insert to COLLECTION_LISTING
                         sellingFireDBHelper.insert(newData: newListing) { listingID, err in
                             if let currID = listingID {
                                 var newMiniListing = MiniListing(id: currID, title: newListing.title, status: newListing.status.rawValue, price: newListing.price)
+                                // upload to firebase storage
                                 sellingFireDBHelper.uploadImage(userEmail: currentUser.id!, newImage: listingImage!, fileName: currID) { imageURL, err in
                                     if let currImageURL = imageURL {
                                         newMiniListing.image = currImageURL
                                     }
+                                    // insert to user listings
                                     authFireDBHelper.insertListing(newData: newMiniListing)
                                 }
                                 dismiss()
@@ -168,37 +120,6 @@ struct CreatePostView: View {
         }
         .padding()
         .navigationBarBackButtonHidden(true)
-    }
-    
-    private func checkPermission(){
-        switch PHPhotoLibrary.authorizationStatus() {
-        case .notDetermined, .denied:
-            self.permissionGranted = false
-            requestPermission()
-        case .authorized:
-            self.permissionGranted = true
-        case .limited, .restricted:
-            // inform user
-            break
-        @unknown default:
-            return
-        }
-    }
-    
-    private func requestPermission(){
-        PHPhotoLibrary.requestAuthorization { status in
-            switch(status) {
-            case .notDetermined, .denied:
-                self.permissionGranted = false
-            case .authorized:
-                self.permissionGranted = true
-            case .limited, .restricted:
-                // inform user
-                break
-            @unknown default:
-                return
-            }
-        }
     }
 }
 

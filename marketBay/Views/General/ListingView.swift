@@ -10,6 +10,8 @@ import SwiftUI
 
 struct ListingView: View {
     @EnvironmentObject var dataAccess: DataAccess
+    @EnvironmentObject var sellingFireDBHelper: SellingFireDBHelper
+
     
     @State private var isFavorite: Bool = false
     @State private var showAlert = false

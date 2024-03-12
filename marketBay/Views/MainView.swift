@@ -13,6 +13,8 @@ struct MainView: View {
     
     private let sellingFireDBHelper = SellingFireDBHelper.getInstance()
     private let authFireDBHelper = AuthenticationFireDBHelper.getInstance()
+    private let generalFireDBHelper = GeneralFireDBHelper.getInstance()
+
     
     var body: some View {
         NavigationStack {
@@ -99,6 +101,8 @@ struct MainView: View {
             case .marketplaceView:
                 MarketplaceView()
                     .environmentObject(sellingFireDBHelper)
+                    .environmentObject(generalFireDBHelper)
+
             default:
                 DashboardView()
             }

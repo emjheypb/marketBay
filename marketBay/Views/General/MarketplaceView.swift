@@ -11,32 +11,35 @@ import SwiftUI
 struct MarketplaceView: View {
     @State private var selectedCategory: Category = .all
     @EnvironmentObject var sellingFireDBHelper: SellingFireDBHelper
-    
-    let categories: [Category] = [.all, .auto, .furniture, .electronics, .womensClothing, .mensClothing, .toys, .homeAndGarden]
+    @EnvironmentObject var generalFireDBHelper: GeneralFireDBHelper
 
     var body: some View {
         NavigationStack {
-            VStack {                
-                // Horizontal Category Selector
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack {
-                        ForEach(categories, id: \.self) { category in
-                            Button(action: {
-                                selectedCategory = category
-                            }) {
-                                VStack {
-                                    Image(systemName: "circle.fill") // Placeholder image
-                                        .foregroundColor(category == selectedCategory ? .blue : .gray)
-                                    Text(category.rawValue) // Access the rawValue
-                                        .font(.caption)
-                                        .foregroundColor(category == selectedCategory ? .blue : .black)
-                                }
-                                .padding(.horizontal, 10)
-                            }
-                        }
-                    }
-                }
-                .padding(.vertical)
+                   VStack {
+                       // Horizontal Category Selector
+                       ScrollView(.horizontal, showsIndicators: false) {
+                           HStack {
+                               ForEach(generalFireDBHelper.categories, id: \.self) { category in
+                                   Button(action: {
+                                       selectedCategory = category
+                                   }) {
+                                       VStack {
+                                           AsyncImage(url: category.imageURL) { image in
+                                                                                  image
+                                                                                      .resizable()
+                                                                                      .frame(width: 40, height: 40) // Adjust size as needed
+                                                                              } // Category icon
+                                               .foregroundColor(category == selectedCategory ? .blue : .gray)
+                                           Text(category.rawValue) // Access the rawValue
+                                               .font(.caption)
+                                               .foregroundColor(category == selectedCategory ? .blue : .black)
+                                       }
+                                       .padding(.horizontal, 10)
+                                   }
+                               }
+                           }
+                       }
+                       .padding(.vertical)
                 
                 // Grid-like Display of Items
                ScrollView {
@@ -53,6 +56,10 @@ struct MarketplaceView: View {
         .onAppear() {
             if(sellingFireDBHelper.listener == nil) {
                 sellingFireDBHelper.getAll()
+            }
+            
+            if(generalFireDBHelper.listener == nil) {
+                generalFireDBHelper.createCategoriesCollectionIfNeeded()
             }
         }
     }

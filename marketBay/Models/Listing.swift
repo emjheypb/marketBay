@@ -17,7 +17,7 @@ struct Listing: Codable, Identifiable {
     var status: PostStatus
     var favoriteCount: Int // track the number of favorites
     let seller: MiniUser
-    let image: String
+    var image: String
 
     
     // Initializer
@@ -30,5 +30,17 @@ struct Listing: Codable, Identifiable {
         self.status = status
         self.favoriteCount = 0
         self.image = ""
+    }
+    
+    init(id: String, title: String, description: String, category: Category, price: Double, seller: MiniUser, status: PostStatus, favoriteCount: Int, image: String) {
+        self.id = id
+        self.title = title
+        self.description = description
+        self.category = category
+        self.price = price
+        self.seller = seller
+        self.status = status
+        self.favoriteCount = 0
+        self.image = image
     }
 }

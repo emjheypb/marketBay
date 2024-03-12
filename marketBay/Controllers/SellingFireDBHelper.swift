@@ -28,7 +28,7 @@ class SellingFireDBHelper: ObservableObject {
         return shared!
     }
     
-    func insert(newData : Listing, completionHandler: @escaping(String?, NSError?) -> Void) {
+    func insert(newData: Listing, completionHandler: @escaping(String?, NSError?) -> Void) {
         do {
             let document = try self.db
                 .collection(FirebaseConstants.COLLECTION_LISTINGS.rawValue)
@@ -37,6 +37,28 @@ class SellingFireDBHelper: ObservableObject {
         } catch let err as NSError {
             print(#function, "ERROR: \(err)")
             completionHandler(nil, err)
+        }
+    }
+    
+    func update(newData: Listing) {
+        do {
+            try self.db
+            .collection(FirebaseConstants.COLLECTION_LISTINGS.rawValue)
+            .document(newData.id!)
+            .setData(from: newData)
+        } catch let err as NSError {
+            print(#function, "ERROR: \(err)")
+        }
+    }
+    
+    func updateImage(newData: Listing, newImage: UIImage, completionHandler: @escaping(String?, NSError?) -> Void) {
+        uploadImage(userEmail: newData.seller.email, newImage: newImage, fileName: newData.id!) { imageURL, err in
+            if let currImageURL = imageURL {
+                var updatedData = newData
+                updatedData.image = currImageURL
+                self.update(newData: updatedData)
+                completionHandler(currImageURL, nil)
+            }
         }
     }
     

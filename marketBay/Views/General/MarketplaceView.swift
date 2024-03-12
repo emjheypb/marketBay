@@ -12,65 +12,70 @@ struct MarketplaceView: View {
     @State private var selectedCategory: Category = .all
     @EnvironmentObject var sellingFireDBHelper: SellingFireDBHelper
     @EnvironmentObject var generalFireDBHelper: GeneralFireDBHelper
+    @EnvironmentObject var authFireDBHelper: AuthenticationFireDBHelper
 
-    var body: some View {
-        NavigationStack {
-                   VStack {
-                       // Horizontal Category Selector
-                       ScrollView(.horizontal, showsIndicators: false) {
-                           HStack {
-                               ForEach(generalFireDBHelper.categories, id: \.self) { category in
-                                   Button(action: {
-                                       selectedCategory = category
-                                   }) {
-                                       VStack {
-                                           AsyncImage(url: category.imageURL) { image in
-                                                                                  image
-                                                                                      .resizable()
-                                                                                      .frame(width: 40, height: 40) // Adjust size as needed
-                                                                              } // Category icon
-                                               .foregroundColor(category == selectedCategory ? .blue : .gray)
-                                           Text(category.rawValue) // Access the rawValue
-                                               .font(.caption)
-                                               .foregroundColor(category == selectedCategory ? .blue : .black)
-                                       }
-                                       .padding(.horizontal, 10)
-                                   }
+
+    
+    let categories: [Category] = [.all, .auto, .furniture, .electronics, .womensClothing, .mensClothing, .toys, .homeAndGarden]
+
+        var body: some View {
+            NavigationStack {
+                VStack {
+                    // Horizontal Category Selector
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            ForEach(categories, id: \.self) { category in
+                                Button(action: {
+                                    selectedCategory = category
+                                }) {
+                                    VStack {
+                                        Image(systemName: "circle.fill") // Placeholder image
+                                            .foregroundColor(category == selectedCategory ? .blue : .gray)
+                                        Text(category.rawValue) // Access the rawValue
+                                            .font(.caption)
+                                            .foregroundColor(category == selectedCategory ? .blue : .black)
+                                    }
+                                    .padding(.horizontal, 10)
+                                }
+                            }
+                        }
+                    }
+                    .padding(.vertical)
+                    
+                    // Grid-like Display of Items
+                   ScrollView {
+                       LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
+                           ForEach(sellingFireDBHelper.listings.filter { $0.category == selectedCategory || selectedCategory == .all }) { listing in
+                                   ItemView(listing: listing)
                                }
-                           }
                        }
-                       .padding(.vertical)
-                
-                // Grid-like Display of Items
-               ScrollView {
-                   LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
-                       ForEach(sellingFireDBHelper.listings.filter { $0.category == selectedCategory || selectedCategory == .all }) { listing in
-                               ItemView(listing: listing)
-                           }
-                   }
-                    .padding(.horizontal)
+                        .padding(.horizontal)
+                    }
+                }
+                .padding()
+            }
+            .onAppear() {
+                if(sellingFireDBHelper.listener == nil) {
+                    sellingFireDBHelper.getAll()
                 }
             }
-            .padding()
         }
-        .onAppear() {
-            if(sellingFireDBHelper.listener == nil) {
-                sellingFireDBHelper.getAll()
-            }
-            
-            if(generalFireDBHelper.listener == nil) {
-                generalFireDBHelper.createCategoriesCollectionIfNeeded()
-            }
-        }
+
     }
 
-}
+
 
 struct ItemView: View {
     let listing: Listing // Add a property to hold the listing information
 
+    @EnvironmentObject var sellingFireDBHelper: SellingFireDBHelper
+    @EnvironmentObject var generalFireDBHelper: GeneralFireDBHelper
+    @EnvironmentObject var authFireDBHelper: AuthenticationFireDBHelper
+
     var body: some View {
-        NavigationLink(destination: ListingView(listing: listing)) {
+        NavigationLink(destination: ListingView(listing: listing).environmentObject(sellingFireDBHelper)
+            .environmentObject(authFireDBHelper)
+            .environmentObject(generalFireDBHelper)) {
             VStack {
                 // Image and Title
                 if(listing.image.isEmpty) {

@@ -101,6 +101,7 @@ struct MainView: View {
             case .marketplaceView:
                 MarketplaceView()
                     .environmentObject(sellingFireDBHelper)
+                    .environmentObject(authFireDBHelper)
                     .environmentObject(generalFireDBHelper)
 
             default:

@@ -11,6 +11,9 @@ import SwiftUI
 struct ListingView: View {
     @EnvironmentObject var dataAccess: DataAccess
     @EnvironmentObject var sellingFireDBHelper: SellingFireDBHelper
+    @EnvironmentObject var authFireDBHelper: AuthenticationFireDBHelper
+    @EnvironmentObject var generalFireDBHelper: GeneralFireDBHelper
+
 
     
     @State private var isFavorite: Bool = false
@@ -69,32 +72,31 @@ struct ListingView: View {
                             ContactOptionsView(listing: listing)
                         }
                         // Add to Favorites Button
-                        if dataAccess.loggedInUser != nil {
+                        if authFireDBHelper.user != nil {
                             Button(action: {
-                                dataAccess.toggleFavorite(for: listing) { isFavoriteValue in
-                                    self.isFavorite = isFavoriteValue
-                                }
+                                toggleFavorite()
                             }) {
                                 Image(systemName: isFavorite ? "heart.fill" : "heart")
                                     .padding()
                                     .foregroundColor(.blue)
                                     .font(.title)
                             }
-                        }else{
+                        } else {
                             // Show an alert if no user is logged in
-                               Button(action: {
-                                   showAlert = true
-                               }) {
-                                   // Favourite Icon = Alerts to SignIn/Register
-                                   Image(systemName: isFavorite ? "heart.fill" : "heart")
-                                       .padding()
-                                       .foregroundColor(.blue)
-                                       .font(.title)
-                               }
-                               .alert(isPresented: $showAlert) {
-                                   Alert(title: Text("Reminder"), message: Text("Please login or register to use the favorite function."), dismissButton: .default(Text("OK")))
-                               }
+                            Button(action: {
+                                showAlert = true
+                            }) {
+                                // Favourite Icon = Alerts to SignIn/Register
+                                Image(systemName: isFavorite ? "heart.fill" : "heart")
+                                    .padding()
+                                    .foregroundColor(.blue)
+                                    .font(.title)
+                            }
+                            .alert(isPresented: $showAlert) {
+                                Alert(title: Text("Reminder"), message: Text("Please login or register to use the favorite function."), dismissButton: .default(Text("OK")))
+                            }
                         }
+
                     }
                     .padding()
                     
@@ -119,15 +121,83 @@ struct ListingView: View {
             }
             .onAppear{
                 DispatchQueue.main.async {
-                    if dataAccess.loggedInUser != nil {
-                               isFavorite = dataAccess.loggedInUserFavorites.contains(where: { $0.id == listing.id })
-                           } else {
-                            isFavorite = false
-                        }
+                    // Check if the user is logged in and update favorite status
+                               if let user = authFireDBHelper.user {
+                                   generalFireDBHelper.isListingFavorited(listing) { isFavorited in
+                                       self.isFavorite = isFavorited
+                                   }
+                               } else {
+                                   isFavorite = false
+                               }
                     }
         }
+            .onChange(of: isFavorite) { newValue in
+                // Update favorite status
+                if newValue {
+                    // Add to favorites
+                    addToFavorites { success in
+                        if !success {
+                            // Handle failure
+                            print("Failed to add listing to favorites")
+                        } else {
+                            // Handle success
+                            print("Listing added to favorites successfully")
+                        }
+                    }
+                } else {
+                    // Remove from favorites
+                    removeFromFavorites { success in
+                        if !success {
+                            // Handle failure
+                            print("Failed to remove listing from favorites")
+                        } else {
+                            // Handle success
+                            print("Listing removed from favorites successfully")
+                        }
+                    }
+                }
+            }
     }
     
+    func toggleFavorite() {
+            if authFireDBHelper.user != nil {
+                isFavorite.toggle()
+            } else {
+                showAlert = true
+            }
+        }
+        
+    func addToFavorites(completion: @escaping (Bool) -> Void) {
+        // Check if the listing is already favorited
+        generalFireDBHelper.isListingFavorited(listing) { isFavorited in
+            if isFavorited {
+                // Listing is already favorited, no need to add again
+                completion(false)
+            } else {
+                // Add listing to favorites in Firestore
+                generalFireDBHelper.addToFavorites(listing) { error in
+                    if let error = error {
+                        // Error occurred while adding listing to favorites
+                        print("Error adding listing to favorites: \(error.localizedDescription)")
+                        completion(false)
+                    } else {
+                        // Listing added to favorites successfully
+                        completion(true)
+                    }
+                }
+            }
+        }
+    }
+
+
+    func removeFromFavorites(completion: @escaping (Bool) -> Void) {
+        // Remove listing from favorites in Firestore
+        generalFireDBHelper.removeFromFavorites(listing) { success in
+            completion(success)
+        }
+    }
+
+
     func shareListing() {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let window = windowScene.windows.first else {

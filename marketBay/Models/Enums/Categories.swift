@@ -29,4 +29,13 @@ enum Category: String, CaseIterable, Codable {
                case .homeAndGarden: return "leaf.fill"
            }
        }
+    
+    var imageURL: URL? {
+            let storageURLString = "https://firebasestorage.googleapis.com/v0/b/marketbay-46fde.appspot.com/o"
+            let path = "General/\(self.systemImageName).png"
+            let escapedPath = path.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
+            let token = "a43955cc-7b69-40d7-94a0-95855f096ecd" // Replace with your Firebase storage token
+            let urlString = "\(storageURLString)/\(escapedPath)?alt=media&token=\(token)"
+            return URL(string: urlString)
+        }
 }

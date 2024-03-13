@@ -112,8 +112,11 @@ struct ItemView: View {
             }
             .background(Color.gray.opacity(0.1))
             .cornerRadius(10)
+
         }
         .background(Color.gray.opacity(0.1))
         .cornerRadius(10)
+        .frame(width: 170, height: 250) // Set a fixed frame size
+
     }
 }

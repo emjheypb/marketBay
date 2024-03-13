@@ -29,6 +29,7 @@ struct ListingView: View {
 
     
     var body: some View {
+        ZStack(alignment: .topTrailing) {
             ScrollView {
                 VStack {
                     Spacer()
@@ -37,7 +38,7 @@ struct ListingView: View {
                         Image(systemName: "photo") // Placeholder image
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 150, height: 150)
+                            .frame(width: 100, height: 100)
                     } else {
                         AsyncImage(url: URL(string: listing.image)) {
                             image in
@@ -51,19 +52,19 @@ struct ListingView: View {
                     // Add your implementation here
                     
                     // Title with Condition Label
-                       HStack {
-                           Text(listing.title)
-                               .font(.title)
-                               .fontWeight(.bold)
-                               .multilineTextAlignment(.center)
-                               .padding(.vertical)
-                           // Condition Label
-                           Text(listing.condition.rawValue)
-                               .foregroundColor(.white)
-                               .padding(.horizontal, 8)
-                               .background(getBackgroundColor(for: listing.condition))
-                               .cornerRadius(4)
-                       }
+                    HStack {
+                        Text(listing.title)
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .multilineTextAlignment(.center)
+                            .padding(.vertical)
+                        // Condition Label
+                        Text(listing.condition.rawValue)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 8)
+                            .background(getBackgroundColor(for: listing.condition))
+                            .cornerRadius(4)
+                    }
                     
                     // Description
                     Text(listing.description) // Display actual listing description
@@ -79,7 +80,7 @@ struct ListingView: View {
                             .frame(width: 50, height: 50)
                         
                         VStack(alignment: .leading) {
-                            Text(listing.seller.name) // Display actual seller name
+                            Text("Seller: \(listing.seller.name)") // Display actual seller name
                                 .font(.headline)
                             // Add more seller info (e.g., rating, location) if applicable
                         }
@@ -89,7 +90,10 @@ struct ListingView: View {
                         Button(action: {
                             showingContactOptions = true
                         }) {
-                            Text("Message")
+                            Image(systemName: "message")
+                                .padding()
+                                .foregroundColor(.blue)
+                                .font(.title)
                         }
                         .sheet(isPresented: $showingContactOptions) {
                             ContactOptionsView(listing: listing)
@@ -119,35 +123,41 @@ struct ListingView: View {
                                 Alert(title: Text("Reminder"), message: Text("Please login or register to use the favorite function."), dismissButton: .default(Text("OK")))
                             }
                         }
-
+                        
                     }
                     .padding()
                     
                     // Price Info
                     Text("Price: $\(String(format: "%.2f", listing.price))") // Display actual price
-                        .font(.headline)
+                        .font(.system(size: 40, weight: .bold)) // Adjust the font size here (change 40 to your desired size)
                         .foregroundColor(.green)
                         .padding(.vertical)
                     
-                    // Share Button
-                    Button(action: {
-                        shareListing()
-                    }) {
-                        Text("Share")
-                    }
-                    .padding()
-                    
                     // MapView to display listing's location
                     MapView(latitude: listing.location.latitude, longitude: listing.location.longitude, address: address)
-                       .frame(height: 200)
-                       .cornerRadius(8)
-                       .padding(.horizontal)
+                        .frame(height: 200)
+                        .cornerRadius(8)
+                        .padding(.horizontal)
                     
                     // Buy Now Button (if applicable)
                     // Add your implementation here
                 }
                 .padding(.horizontal)
             }
+            
+            // Share Button
+            HStack {
+                Spacer()
+                Button(action: {
+                    shareListing()
+                }) {
+                    Image(systemName: "square.and.arrow.up")
+                        .padding()
+                        .font(.title) // Adjust the size of the button
+                }
+            }
+            .padding()
+        }
             .onAppear{
                 DispatchQueue.main.async {
                     // Perform reverse geocoding to get the address
@@ -165,7 +175,7 @@ struct ListingView: View {
                         isFavorite = false
                     }
                 }
-        }
+            }
             .onChange(of: isFavorite) { newValue in
                 // Update favorite status
                 if newValue {
@@ -192,7 +202,8 @@ struct ListingView: View {
                     }
                 }
             }
-    }
+        }
+    
     private func convertCoordinatesToAddress() {
         let location = CLLocation(latitude: listing.location.latitude, longitude: listing.location.longitude)
         let geocoder = CLGeocoder()

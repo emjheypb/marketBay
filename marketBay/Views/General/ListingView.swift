@@ -7,6 +7,8 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
+import CoreLocation
 
 struct ListingView: View {
     @EnvironmentObject var dataAccess: DataAccess
@@ -22,6 +24,9 @@ struct ListingView: View {
     @State private var showAlert = false
     @State var listing: Listing
     @State private var showingContactOptions = false
+    @State private var address: String = "" // Add state variable to hold the address
+    @State private var errorMessage: String = ""
+
     
     var body: some View {
             ScrollView {
@@ -133,7 +138,7 @@ struct ListingView: View {
                     .padding()
                     
                     // MapView to display listing's location
-                    MapView(latitude: listing.location.latitude, longitude: listing.location.longitude)
+                    MapView(latitude: listing.location.latitude, longitude: listing.location.longitude, address: address)
                        .frame(height: 200)
                        .cornerRadius(8)
                        .padding(.horizontal)
@@ -145,6 +150,9 @@ struct ListingView: View {
             }
             .onAppear{
                 DispatchQueue.main.async {
+                    // Perform reverse geocoding to get the address
+                    convertCoordinatesToAddress()
+                    
                     fireAuthHelper.listenToAuthState()
                     // Check if the user is logged in and update favorite status
                     if let currUser = fireAuthHelper.user {
@@ -185,6 +193,49 @@ struct ListingView: View {
                 }
             }
     }
+    private func convertCoordinatesToAddress() {
+        let location = CLLocation(latitude: listing.location.latitude, longitude: listing.location.longitude)
+        let geocoder = CLGeocoder()
+        
+        geocoder.reverseGeocodeLocation(location) { placemarks, error in
+            guard let placemark = placemarks?.first else {
+                if let error = error {
+                    errorMessage = "Reverse geocoding error: \(error.localizedDescription)"
+                } else {
+                    errorMessage = "Unknown error occurred during reverse geocoding."
+                }
+                return
+            }
+            
+            // Construct the address using available properties
+            var addressComponents: [String] = []
+            if let subThoroughfare = placemark.subThoroughfare {
+                addressComponents.append(subThoroughfare)
+            }
+            if let thoroughfare = placemark.thoroughfare {
+                addressComponents.append(thoroughfare)
+            }
+            if let locality = placemark.locality {
+                addressComponents.append(locality)
+            }
+            if let administrativeArea = placemark.administrativeArea {
+                addressComponents.append(administrativeArea)
+            }
+            if let postalCode = placemark.postalCode {
+                addressComponents.append(postalCode)
+            }
+            if let country = placemark.country {
+                addressComponents.append(country)
+            }
+            
+            // Combine address components into a single string
+            let formattedAddress = addressComponents.joined(separator: ", ")
+            
+            // Update the address state variable
+            address = formattedAddress
+        }
+    }
+
     
     // Function to get background color for condition label
     func getBackgroundColor(for condition: Condition) -> Color {

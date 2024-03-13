@@ -15,7 +15,7 @@ final class AppRootManager: ObservableObject {
     let homePage: Screens = .marketplaceView
     
     var rootScreens : [(String, Screens, String)] = [
-        ("Dashboard", .dashboardView, "house.fill"),
+//        ("Dashboard", .dashboardView, "house.fill"),
         ("Marketplace", .marketplaceView, "basket.fill"),
         ("My Posts", .myPostsView, "tag.fill"),
         ("Favorites", .favoritesView, "star.fill"),
@@ -25,7 +25,7 @@ final class AppRootManager: ObservableObject {
 
 // MARK: NavigationLink Tags
 enum Screens {
-    case dashboardView
+//    case dashboardView
     case registrationView
     case favoritesView
     case myPostsView

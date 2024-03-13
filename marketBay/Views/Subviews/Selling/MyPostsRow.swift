@@ -28,7 +28,7 @@ struct MyPostsRow: View {
             }
             
             VStack(alignment: .leading) {
-                Text("# \(listing.id)")
+                Text("# \(listing.id!)")
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .font(.caption)
                     .foregroundColor(.gray)

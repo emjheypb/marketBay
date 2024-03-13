@@ -10,6 +10,8 @@ import FirebaseFirestore
 
 class AuthenticationFireDBHelper: ObservableObject {
     @Published var user: User?
+    @Published var userListings = [MiniListing]()
+    
     var listener: ListenerRegistration? = nil
     
     private let db : Firestore
@@ -38,42 +40,73 @@ class AuthenticationFireDBHelper: ObservableObject {
         }
     }
     
-    func insertListing(newData : MiniListing) {
-        user?.listings.append(newData)
-        self.insert(newData: user!)
+    func insertListing(newData : MiniListing, user : String, listingID: String) {
+        do {
+            try self.db
+                .collection(FirebaseConstants.COLLECTION_USERS.rawValue)
+                .document(user)
+                .collection(FirebaseConstants.COLLECTION_LISTINGS.rawValue)
+                .document(listingID)
+                .setData(from: newData)
+            self.userListings.append(newData)
+        } catch let err as NSError {
+            print(#function, "ERROR: \(err)")
+        }
     }
     
     func updateMiniListing(newData: Listing) {
-        for index in 0...user!.listings.count - 1 {
-            if(user!.listings[index].id == newData.id) {
-                user!.listings[index].title = newData.title
-                user!.listings[index].price = newData.price
-                user!.listings[index].status = newData.status.rawValue
-                user!.listings[index].image = newData.image
-            }
+        do {
+            try self.db
+                .collection(FirebaseConstants.COLLECTION_USERS.rawValue)
+                .document(newData.seller.email)
+                .collection(FirebaseConstants.COLLECTION_LISTINGS.rawValue)
+                .document(newData.id!)
+                .setData(from: newData)
+        } catch let err as NSError {
+            print(#function, "ERROR: \(err)")
         }
-        self.insert(newData: user!)
     }
     
-    func getUser(email: String){
+    func getUserListings(email: String) {
         listener = self.db
             .collection(FirebaseConstants.COLLECTION_USERS.rawValue)
             .document(email)
-            .addSnapshotListener { documentSnapshot, error in
-                guard let document = documentSnapshot else {
+            .collection(FirebaseConstants.COLLECTION_LISTINGS.rawValue)
+            .addSnapshotListener { querySnapshot, error in
+                guard let documents = querySnapshot?.documents else {
                     print(#function, "FAILED TO RETRIEVE DATA: \(error)")
                     return
                 }
-                guard let data = document.data() else {
-                    print(#function, "DOCUMENT IS EMPTY")
-                    return
+                
+                self.userListings.removeAll()
+                documents.forEach { snapshot in
+                    do {
+                        let listing : MiniListing = try snapshot.data(as: MiniListing.self)
+                        self.userListings.append(listing)
+                    } catch let err as NSError {
+                        print(#function, "UNABLE TO CONVERT DATA: \(err)")
+                    }
                 }
-                do {
-                    self.user = try document.data(as: User.self)
-                } catch let err as NSError {
-                    print(#function, "UNABLE TO CONVERT DATA: \(err)")
-                }
+                
+                print(#function, self.userListings.count, self.userListings)
             }
+    }
+    
+    func getUser(email: String){
+        self.db
+            .collection(FirebaseConstants.COLLECTION_USERS.rawValue)
+            .document(email)
+            .getDocument { user, error in
+            guard let currUser = user else {
+                print(#function, "FAILED TO RETRIEVE DATA: \(error)")
+                return
+            }
+            do {
+                self.user = try currUser.data(as: User.self)
+            } catch let err as NSError {
+                print(#function, "UNABLE TO CONVERT DATA: \(err)")
+            }
+        }
     }
     
     func removeListener() {

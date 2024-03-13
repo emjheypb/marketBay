@@ -22,13 +22,14 @@ struct CreatePostView: View {
     @State private var priceIn: String = ""
     @State private var conditionIn: Condition = .brandNew // Gordon: New input field for condition
     @State private var addressIn: String = "" // Gordon: New input field for address
-    @State private var latitudeIn: Double = 0 // Gordon: New input field for latitude
-    @State private var longitudeIn: Double = 0 // Gordon: New input field for longitude
     @State private var listingImage : UIImage?
     
     // MARK: Output Variables
     @State private var showAlert: Bool = false
     @State private var errorMessage = ""
+    
+    @State private var latitude: Double = 0 // Gordon: New input field for latitude
+    @State private var longitude: Double = 0 // Gordon: New input field for longitude
     
     var body: some View {
         CustomBackFragment()
@@ -86,7 +87,8 @@ struct CreatePostView: View {
                 MultilineTextboxFragment(fieldName: "Description", placeholder: "Description", binding: $descriptionIn)
                 
                 //Gordon: Address
-                TextboxFragment(fieldName: "Address", placeholder: "Address", binding: $addressIn)
+                TextboxFragment(fieldName: "Address", placeholder: "Address", binding: $addressIn, isMandatory: true)
+                    .textInputAutocapitalization(.words)
                 
                 // Listing Image
                 UploadPhotoSubview(listingImage: $listingImage, imageURL: "")
@@ -95,42 +97,45 @@ struct CreatePostView: View {
             Spacer()
             
             Button {
-                // MARK: Validate form
-                errorMessage = ""
-                
-                errorMessage += titleIn.isEmpty ? "\n• Title" : ""
-                errorMessage += priceIn.isEmpty || Double(priceIn) == nil ? "\n• Price" : ""
-                errorMessage += listingImage == nil ? "\n• Image" : ""
-                
-                // MARK: Submit Listing
-                if(!errorMessage.isEmpty) {
-                    showAlert = true
-                } else {
-                    if let currentUser = authFireDBHelper.user {
-                        convertAddressToCoordinates(address: addressIn)
-                                            let newMiniUser = MiniUser(name: currentUser.name, email: currentUser.id!, phoneNumber: currentUser.phoneNumber)
-                                            let newListing = Listing(title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: newMiniUser, status: .available, favoriteCount: 0, condition: conditionIn, location: GeoPoint(latitude: latitudeIn, longitude: longitudeIn)) // Gordon: Use latitudeIn and longitudeIn to create GeoPoint
-                                            
-                                            // insert to COLLECTION_LISTING
-                                            sellingFireDBHelper.insert(newData: newListing) { listingID, err in
-                                                if let currID = listingID {
-                                                    var newMiniListing = MiniListing(id: currID, title: newListing.title, status: newListing.status.rawValue, price: newListing.price)
-                                                    // upload to firebase storage
-                                                    sellingFireDBHelper.uploadImage(userEmail: currentUser.id!, newImage: listingImage!, fileName: currID) { imageURL, err in
-                                                        if let currImageURL = imageURL {
-                                                            newMiniListing.image = currImageURL
-                                                        }
-                                                        // insert to user listings
-                                                        authFireDBHelper.insertListing(newData: newMiniListing)
-                                                    }
-                                                    dismiss()
-                                                } else {
-                                                    errorMessage += "Error Adding Posting. Try Again."
-                                                    showAlert = true
-                                                }
-                                            }
+                convertAddressToCoordinates(address: addressIn) { result in
+                    // MARK: Validate form
+                    errorMessage = ""
+                    
+                    errorMessage += titleIn.isEmpty ? "\n• Title" : ""
+                    errorMessage += priceIn.isEmpty || Double(priceIn) == nil ? "\n• Price" : ""
+                    errorMessage += listingImage == nil ? "\n• Image" : ""
+                    errorMessage += !result ? "\n• Address" : ""
+                    
+                    // MARK: Submit Listing
+                    if(!errorMessage.isEmpty) {
+                        showAlert = true
+                    } else {
+                        if let currentUser = authFireDBHelper.user {
+                            
+                            let newMiniUser = MiniUser(name: currentUser.name, email: currentUser.id!, phoneNumber: currentUser.phoneNumber)
+                            let newListing = Listing(title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: newMiniUser, status: .available, favoriteCount: 0, condition: conditionIn, location: GeoPoint(latitude: latitude, longitude: longitude)) // Gordon: Use latitudeIn and longitudeIn to create GeoPoint
+                            
+                            // insert to COLLECTION_LISTING
+                            sellingFireDBHelper.insert(newData: newListing) { listingID, err in
+                                if let currID = listingID {
+                                    var newMiniListing = MiniListing(id: currID, title: newListing.title, status: newListing.status.rawValue, price: newListing.price)
+                                    // upload to firebase storage
+                                    sellingFireDBHelper.uploadImage(userEmail: currentUser.id!, newImage: listingImage!, fileName: currID) { imageURL, err in
+                                        if let currImageURL = imageURL {
+                                            newMiniListing.image = currImageURL
                                         }
+                                        // insert to user listings
+                                        authFireDBHelper.insertListing(newData: newMiniListing, user: currentUser.id!, listingID: currID)
                                     }
+                                    dismiss()
+                                } else {
+                                    errorMessage += "Error Adding Posting. Try Again."
+                                    showAlert = true
+                                }
+                            }
+                        }
+                    }
+                }
             }label: {
                 Text("P O S T")
                     .frame(maxWidth: .infinity)
@@ -147,12 +152,14 @@ struct CreatePostView: View {
         .padding()
         .navigationBarBackButtonHidden(true)
     }
-    // Gordon: MARK: Geocoding Methods
-    private func convertAddressToCoordinates(address: String) {
+    
+    // Gordon
+    private func convertAddressToCoordinates(address: String, completionHandler: @escaping(Bool) -> Void) {
         let geocoder = CLGeocoder()
         geocoder.geocodeAddressString(address) { placemarks, error in
             guard let placemark = placemarks?.first, let location = placemark.location else {
                 print("Error: Unable to geocode address")
+                completionHandler(false)
                 return
             }
             
@@ -160,8 +167,10 @@ struct CreatePostView: View {
             let longitude = location.coordinate.longitude
             
             // Update latitudeIn and longitudeIn accordingly
-            latitudeIn = latitude
-            longitudeIn = longitude
+            self.latitude = latitude
+            self.longitude = longitude
+            completionHandler(true)
+            return
         }
     }
 }

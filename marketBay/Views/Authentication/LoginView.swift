@@ -10,7 +10,6 @@ import SwiftUI
 struct LoginView: View {
     @Environment(\.dismiss)  var dismiss
     
-    @State private var rememberUserDetails: User?
     var selectedPage : Screens?
     @State private var emailFromUI : String = ""
     @State private var passwordFromUI : String = ""
@@ -74,6 +73,8 @@ struct LoginView: View {
         .onAppear(){
             emailFromUI = UserDefaults.standard.string(forKey: UserDefaultsEnum.USER_EMAIL.rawValue) ?? ""
             passwordFromUI = UserDefaults.standard.string(forKey: UserDefaultsEnum.USER_PASSWORD.rawValue) ?? ""
+            rememberUser = UserDefaults.standard.bool(forKey: UserDefaultsEnum.rememberUser.rawValue) ?? false
+            
         }
     }
     
@@ -114,10 +115,28 @@ struct LoginView: View {
             if(error != nil) {
                 self.errorMessage = "Invalid Credentials"
             } else {
+                if self.rememberUser{
+                    self.addUserDetailsToUD(email: self.emailFromUI, password: self.passwordFromUI)
+                }
+                else{
+                    self.removeUserFromUD()
+                }
                 appRootManager.currentRoot = selectedPage ?? .marketplaceView
                 dismiss()
             }
         }
+    }
+    
+    func addUserDetailsToUD(email: String, password: String) {
+        UserDefaults.standard.set(email, forKey: UserDefaultsEnum.USER_EMAIL.rawValue)
+        UserDefaults.standard.set(password, forKey: UserDefaultsEnum.USER_PASSWORD.rawValue)
+        UserDefaults.standard.set(true, forKey: UserDefaultsEnum.rememberUser.rawValue)
+    }
+    
+    func removeUserFromUD(){
+        UserDefaults.standard.removeObject(forKey: UserDefaultsEnum.rememberUser.rawValue)
+        UserDefaults.standard.removeObject(forKey: UserDefaultsEnum.USER_EMAIL.rawValue)
+        UserDefaults.standard.removeObject(forKey: UserDefaultsEnum.USER_PASSWORD.rawValue)
     }
 }
 

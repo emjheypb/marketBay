@@ -69,12 +69,13 @@ class AuthenticationFireDBHelper: ObservableObject {
     
     func updateMiniListing(newData: Listing) {
         do {
+            let miniListing = MiniListing(title: newData.title, status: newData.status.rawValue, price: newData.price, image: newData.image)
             try self.db
                 .collection(FirebaseConstants.COLLECTION_USERS.rawValue)
                 .document(newData.seller.email)
                 .collection(FirebaseConstants.COLLECTION_LISTINGS.rawValue)
                 .document(newData.id!)
-                .setData(from: newData)
+                .setData(from: miniListing)
         } catch let err as NSError {
             print(#function, "ERROR: \(err)")
         }

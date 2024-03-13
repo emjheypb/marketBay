@@ -121,6 +121,8 @@ struct LoginView: View {
                 else{
                     self.removeUserFromUD()
                 }
+                UserDefaults.standard.set(self.emailFromUI, forKey: UserDefaultsEnum.loggedInUser.rawValue)
+                self.authFireDBHelper.getUser(email: self.emailFromUI)
                 appRootManager.currentRoot = selectedPage ?? .marketplaceView
                 dismiss()
             }

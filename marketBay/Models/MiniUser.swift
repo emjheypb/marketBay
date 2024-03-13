@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import FirebaseFirestoreSwift
 
 struct MiniUser: Codable {
-//    @DocumentID var id: String? = UUID().uuidString
+    @DocumentID var id: String? = UUID().uuidString
     var name: String
     var email: String
     var phoneNumber: String

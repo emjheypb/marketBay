@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FirebaseStorage
 
 struct PostView: View {
     @Environment(\.dismiss)  var dismiss
@@ -110,7 +111,7 @@ struct PostView: View {
                                 title: Text("Update Listing Details"),
                                 message: Text("Are you sure you want to update?"),
                                 primaryButton: .default(Text("Update")) {
-                                    var updatedListing = Listing(id: listing.id!, title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: listing.seller, status: listing.status, favoriteCount: listing.favoriteCount, image: listing.image)
+                                    var updatedListing = Listing(id: listing.id!, title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: listing.seller, status: listing.status, favoriteCount: listing.favoriteCount, image: listing.image, condition: listing.condition, location: listing.location)
                                     if let image = listingImage {
                                         sellingFireDBHelper.updateImage(newData: updatedListing, newImage: image) { imageDownloadURL, error in
                                             if let imageURL = imageDownloadURL {
@@ -143,7 +144,7 @@ struct PostView: View {
                             title: Text("There's no turning back!"),
                             message: Text("Are you sure you want to take this off the market?"),
                             primaryButton: .destructive(Text("Take Off the Market")) {
-                                let updatedListing = Listing(id: listing.id!, title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: listing.seller, status: PostStatus.offTheMarket, favoriteCount: listing.favoriteCount, image: listing.image)
+                                let updatedListing = Listing(id: listing.id!, title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: listing.seller, status: PostStatus.offTheMarket, favoriteCount: listing.favoriteCount, image: listing.image, condition: listing.condition, location: listing.location)
                                 sellingFireDBHelper.update(newData: updatedListing)
                                 authFireDBHelper.updateMiniListing(newData: updatedListing)
                                 dismiss()
@@ -179,6 +180,3 @@ struct PostView: View {
     }
 }
 
-#Preview {
-    PostView(listing: Listing(title: "Unlock! A Noside Story", description: "Secret Adventures: Part 1", category: .toys, price: 25.0, seller: MiniUser(name: "MJ", email: "mb", phoneNumber: "123"), status: .available, favoriteCount: 0))
-}

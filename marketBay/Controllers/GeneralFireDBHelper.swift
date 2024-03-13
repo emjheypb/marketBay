@@ -11,7 +11,9 @@ import FirebaseStorage
 
 class GeneralFireDBHelper: ObservableObject {
     @Published var categories: [Category] = []
-    
+    @Published var userCollections: [Collection] = [] // Add userCollections variable
+    @Published var userFavorites: [Listing] = [] // Add userFavorites variable
+
     var listener: ListenerRegistration? = nil
 
     
@@ -136,13 +138,14 @@ class GeneralFireDBHelper: ObservableObject {
         
         // Implement logic to add the collection to Firestore
         let collectionRef = db.collection("Users").document(userID).collection("collections")
-        let data = ["name": name] // Add more fields as needed
+        let data = ["name": name, "ownerID": userID] // Add more fields as needed
         collectionRef.addDocument(data: data) { error in
             if let error = error {
                 completion(nil, error)
             } else {
                 // Collection added successfully, create the Collection object
                 let newCollection = Collection(name: name, ownerID: userID)
+                self.userCollections.append(newCollection) // Update userCollections
                 completion(newCollection, nil)
             }
         }
@@ -172,6 +175,10 @@ class GeneralFireDBHelper: ObservableObject {
                 if let error = error {
                     completion(error)
                 } else {
+                    // Remove deleted collection from userCollections
+                    if let index = self.userCollections.firstIndex(where: { $0.id == collection.id }) {
+                    self.userCollections.remove(at: index)
+                }
                     completion(nil)
                 }
             }
@@ -199,6 +206,8 @@ class GeneralFireDBHelper: ObservableObject {
                         }
                     }
                 }
+                // Update userCollections
+                self.userCollections = collections
                 completion(collections)
             }
         }
@@ -257,6 +266,8 @@ class GeneralFireDBHelper: ObservableObject {
                     }
                 }
             }
+            // Update userFavorites
+            self.userFavorites = favorites
             completion(favorites)
         }
     }
@@ -288,18 +299,26 @@ class GeneralFireDBHelper: ObservableObject {
         // Reference to the user's favorites collection
         let userFavoritesRef = Firestore.firestore().collection("Users").document(userID).collection("favorites").document(listingID)
         
-        // Add the listing to the favorites collection
-        userFavoritesRef.setData(["id": listingID, "title": listing.title, "price": listing.price]) { error in
-            if let error = error {
-                // Error occurred while adding listing to favorites
-                completion(error)
-            } else {
-                // Listing added to favorites successfully
-                completion(nil)
+        // Convert Listing object into Firestore data
+        do {
+            let listingData = try Firestore.Encoder().encode(listing)
+            
+            // Add the listing to the favorites collection
+            userFavoritesRef.setData(listingData) { error in
+                if let error = error {
+                    // Error occurred while adding listing to favorites
+                    completion(error)
+                } else {
+                    // Listing added to favorites successfully
+                    self.userFavorites.append(listing) // Update userFavorites
+                    completion(nil)
+                }
             }
+        } catch {
+            // Error occurred while encoding listing
+            completion(error)
         }
     }
-
 
     // Function to check if the user has favorited a listing
     func isListingFavorited(_ listing: Listing, completion: @escaping (Bool) -> Void) {
@@ -363,6 +382,10 @@ class GeneralFireDBHelper: ObservableObject {
                 print("Error removing listing from favorites: \(error.localizedDescription)")
                 completion(false)
             } else {
+                // Remove deleted listing from userFavorites
+                if let index = self.userFavorites.firstIndex(where: { $0.id == listing.id }) {
+                    self.userFavorites.remove(at: index)
+                }
                 completion(true)
             }
         }

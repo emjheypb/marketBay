@@ -7,6 +7,8 @@
 
 import SwiftUI
 import PhotosUI
+import FirebaseFirestore
+import CoreLocation
 
 struct CreatePostView: View {
     @Environment(\.dismiss)  var dismiss
@@ -18,6 +20,10 @@ struct CreatePostView: View {
     @State private var descriptionIn: String = ""
     @State private var categoryIn: Category = .auto
     @State private var priceIn: String = ""
+    @State private var conditionIn: Condition = .brandNew // Gordon: New input field for condition
+    @State private var addressIn: String = "" // Gordon: New input field for address
+    @State private var latitudeIn: Double = 0 // Gordon: New input field for latitude
+    @State private var longitudeIn: Double = 0 // Gordon: New input field for longitude
     @State private var listingImage : UIImage?
     
     // MARK: Output Variables
@@ -28,7 +34,7 @@ struct CreatePostView: View {
         CustomBackFragment()
         VStack {
             PageHeadingFragment(pageTitle: "New Post")
-        
+            
             // MARK: Post Details
             ScrollView {
                 // MARK: Product Details
@@ -57,11 +63,30 @@ struct CreatePostView: View {
                 .padding(.bottom, 5)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 
+                //Gordon: Condition Picker
+                HStack {
+                    Text("*")
+                        .fontWeight(.bold)
+                        .foregroundStyle(.red)
+                    Text("Condition")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                Picker("Condition", selection: $conditionIn) {
+                    ForEach(Condition.allCases, id: \.self) { condition in
+                        Text(condition.rawValue).tag(condition)
+                    }
+                }
+                .padding(.bottom, 5)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                
                 // Price
                 TextboxFragment(fieldName: "Price", placeholder: "Price", binding: $priceIn, keyboardType: .decimalPad, isMandatory: true)
                 
                 // Description
                 MultilineTextboxFragment(fieldName: "Description", placeholder: "Description", binding: $descriptionIn)
+                
+                //Gordon: Address
+                TextboxFragment(fieldName: "Address", placeholder: "Address", binding: $addressIn)
                 
                 // Listing Image
                 UploadPhotoSubview(listingImage: $listingImage, imageURL: "")
@@ -82,29 +107,30 @@ struct CreatePostView: View {
                     showAlert = true
                 } else {
                     if let currentUser = authFireDBHelper.user {
-                        let newMiniUser = MiniUser(name: currentUser.name, email: currentUser.id!, phoneNumber: currentUser.phoneNumber)
-                        let newListing = Listing(title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: newMiniUser, status: .available, favoriteCount: 0)
-                        
-                        // insert to COLLECTION_LISTING
-                        sellingFireDBHelper.insert(newData: newListing) { listingID, err in
-                            if let currID = listingID {
-                                var newMiniListing = MiniListing(id: currID, title: newListing.title, status: newListing.status.rawValue, price: newListing.price)
-                                // upload to firebase storage
-                                sellingFireDBHelper.uploadImage(userEmail: currentUser.id!, newImage: listingImage!, fileName: currID) { imageURL, err in
-                                    if let currImageURL = imageURL {
-                                        newMiniListing.image = currImageURL
+                        convertAddressToCoordinates(address: addressIn)
+                                            let newMiniUser = MiniUser(name: currentUser.name, email: currentUser.id!, phoneNumber: currentUser.phoneNumber)
+                                            let newListing = Listing(title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: newMiniUser, status: .available, favoriteCount: 0, condition: conditionIn, location: GeoPoint(latitude: latitudeIn, longitude: longitudeIn)) // Gordon: Use latitudeIn and longitudeIn to create GeoPoint
+                                            
+                                            // insert to COLLECTION_LISTING
+                                            sellingFireDBHelper.insert(newData: newListing) { listingID, err in
+                                                if let currID = listingID {
+                                                    var newMiniListing = MiniListing(id: currID, title: newListing.title, status: newListing.status.rawValue, price: newListing.price)
+                                                    // upload to firebase storage
+                                                    sellingFireDBHelper.uploadImage(userEmail: currentUser.id!, newImage: listingImage!, fileName: currID) { imageURL, err in
+                                                        if let currImageURL = imageURL {
+                                                            newMiniListing.image = currImageURL
+                                                        }
+                                                        // insert to user listings
+                                                        authFireDBHelper.insertListing(newData: newMiniListing)
+                                                    }
+                                                    dismiss()
+                                                } else {
+                                                    errorMessage += "Error Adding Posting. Try Again."
+                                                    showAlert = true
+                                                }
+                                            }
+                                        }
                                     }
-                                    // insert to user listings
-                                    authFireDBHelper.insertListing(newData: newMiniListing)
-                                }
-                                dismiss()
-                            } else {
-                                errorMessage += "Error Adding Posting. Try Again."
-                                showAlert = true
-                            }
-                        }
-                    }
-                }
             }label: {
                 Text("P O S T")
                     .frame(maxWidth: .infinity)
@@ -121,8 +147,21 @@ struct CreatePostView: View {
         .padding()
         .navigationBarBackButtonHidden(true)
     }
-}
-
-#Preview {
-    CreatePostView()
+    // Gordon: MARK: Geocoding Methods
+    private func convertAddressToCoordinates(address: String) {
+        let geocoder = CLGeocoder()
+        geocoder.geocodeAddressString(address) { placemarks, error in
+            guard let placemark = placemarks?.first, let location = placemark.location else {
+                print("Error: Unable to geocode address")
+                return
+            }
+            
+            let latitude = location.coordinate.latitude
+            let longitude = location.coordinate.longitude
+            
+            // Update latitudeIn and longitudeIn accordingly
+            latitudeIn = latitude
+            longitudeIn = longitude
+        }
+    }
 }

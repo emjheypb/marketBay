@@ -28,21 +28,37 @@ struct ListingView: View {
                 VStack {
                     Spacer()
                     Spacer()
-                    // Image
-                    Image(systemName: "photo") // Placeholder image
-                        .resizable()
+                    if(listing.image.isEmpty) {
+                        Image(systemName: "photo") // Placeholder image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 150, height: 150)
+                    } else {
+                        AsyncImage(url: URL(string: listing.image)) {
+                            image in
+                            image.image?.resizable()
+                        }
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 200, height: 200)
+                        .frame(width: 150, height: 150)
+                    }
                     
                     // Image Shortcut Gallery (if applicable)
                     // Add your implementation here
                     
-                    // Title
-                    Text(listing.title) // Display actual listing title
-                        .font(.title)
-                        .fontWeight(.bold)
-                        .multilineTextAlignment(.center)
-                        .padding(.vertical)
+                    // Title with Condition Label
+                       HStack {
+                           Text(listing.title)
+                               .font(.title)
+                               .fontWeight(.bold)
+                               .multilineTextAlignment(.center)
+                               .padding(.vertical)
+                           // Condition Label
+                           Text(listing.condition.rawValue)
+                               .foregroundColor(.white)
+                               .padding(.horizontal, 8)
+                               .background(getBackgroundColor(for: listing.condition))
+                               .cornerRadius(4)
+                       }
                     
                     // Description
                     Text(listing.description) // Display actual listing description
@@ -116,6 +132,12 @@ struct ListingView: View {
                     }
                     .padding()
                     
+                    // MapView to display listing's location
+                    MapView(latitude: listing.location.latitude, longitude: listing.location.longitude)
+                       .frame(height: 200)
+                       .cornerRadius(8)
+                       .padding(.horizontal)
+                    
                     // Buy Now Button (if applicable)
                     // Add your implementation here
                 }
@@ -123,6 +145,7 @@ struct ListingView: View {
             }
             .onAppear{
                 DispatchQueue.main.async {
+                    fireAuthHelper.listenToAuthState()
                     // Check if the user is logged in and update favorite status
                     if let currUser = fireAuthHelper.user {
                         authFireDBHelper.getUser(email: currUser.email!)
@@ -162,6 +185,20 @@ struct ListingView: View {
                 }
             }
     }
+    
+    // Function to get background color for condition label
+    func getBackgroundColor(for condition: Condition) -> Color {
+            switch condition {
+            case .preOwned:
+                return Color.red
+            case .good:
+                return Color.blue
+            case .veryGood:
+                return Color.green
+            case .brandNew:
+                return Color.orange
+            }
+        }
     
     func toggleFavorite() {
             if authFireDBHelper.user != nil {

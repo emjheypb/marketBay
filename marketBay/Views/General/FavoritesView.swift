@@ -13,15 +13,11 @@ struct FavoritesView: View {
     @State private var showAddToList = false
     @State private var favorites: [Listing] = []
     @State private var collections: [Collection] = []
-
-    
     @State private var newCollectionName = ""
-    @State private var loggedInUser: User?
     @State private var selectedCollections: [Collection] = []
     @State private var selectedListing: Listing?
     
     @EnvironmentObject var authFireDBHelper: AuthenticationFireDBHelper
-    @EnvironmentObject var sellingFireDBHelper: SellingFireDBHelper
     @EnvironmentObject var generalFireDBHelper: GeneralFireDBHelper
     @EnvironmentObject var fireAuthHelper: FireAuthHelper
     
@@ -77,13 +73,11 @@ struct FavoritesView: View {
                     FavoritesListView(showAddToList: $showAddToList, selectedListing: $selectedListing).environmentObject(authFireDBHelper)
                         .environmentObject(generalFireDBHelper)
                         .environmentObject(fireAuthHelper)
-                        .environmentObject(sellingFireDBHelper)
                 } else {
                     // Grid of collections
                     CollectionsGridView().environmentObject(authFireDBHelper)
                         .environmentObject(generalFireDBHelper)
                         .environmentObject(fireAuthHelper)
-                        .environmentObject(sellingFireDBHelper)
                 }
                 
                 // Create Collection Button
@@ -105,6 +99,8 @@ struct FavoritesView: View {
                 AddToListView(selectedCollections: $selectedCollections, selectedListing: $selectedListing, showAddToList: $showAddToList)
             }
             .onAppear{
+                fireAuthHelper.listenToAuthState()
+
                 if let currUser = fireAuthHelper.user {
                     authFireDBHelper.getUser(email: currUser.email!)
                     // Fetch user-specific collections when the view appears
@@ -113,13 +109,14 @@ struct FavoritesView: View {
                     }
                     // Fetch favorite listings for the logged-in user when the view appears
                     generalFireDBHelper.getLoggedInUserFavorites { favorites in
-                                self.favorites = favorites
-                            }
+                        self.favorites = favorites
+                    }
                 }
             }
         }
     }
 }
+
 
 struct FavoritesListView: View {
     @Binding var showAddToList: Bool

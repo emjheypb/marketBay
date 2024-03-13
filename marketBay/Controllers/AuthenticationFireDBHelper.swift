@@ -40,6 +40,19 @@ class AuthenticationFireDBHelper: ObservableObject {
         }
     }
     
+    func update(newName : String, newPhone : String){
+        self.db.collection(FirebaseConstants.COLLECTION_USERS.rawValue)
+            .document(self.user!.id!)
+            .updateData(["name": newName, "phoneNumber": newPhone]){error in
+                if let err = error{
+                    print(#function, "Unable to update document: \(err)")
+                }
+                else{
+                    print(#function, "Successfully updated document")
+                }
+            }
+    }
+    
     func insertListing(newData : MiniListing, user : String, listingID: String) {
         do {
             try self.db

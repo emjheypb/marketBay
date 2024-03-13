@@ -13,6 +13,8 @@ struct ListingView: View {
     @EnvironmentObject var sellingFireDBHelper: SellingFireDBHelper
     @EnvironmentObject var authFireDBHelper: AuthenticationFireDBHelper
     @EnvironmentObject var generalFireDBHelper: GeneralFireDBHelper
+    @EnvironmentObject var fireAuthHelper: FireAuthHelper
+
 
 
     
@@ -122,14 +124,16 @@ struct ListingView: View {
             .onAppear{
                 DispatchQueue.main.async {
                     // Check if the user is logged in and update favorite status
-                               if let user = authFireDBHelper.user {
-                                   generalFireDBHelper.isListingFavorited(listing) { isFavorited in
-                                       self.isFavorite = isFavorited
-                                   }
-                               } else {
-                                   isFavorite = false
-                               }
+                    if let currUser = fireAuthHelper.user {
+                        authFireDBHelper.getUser(email: currUser.email!)
+                        
+                        generalFireDBHelper.isListingFavorited(listing) { isFavorited in
+                            self.isFavorite = isFavorited
+                        }
+                    } else {
+                        isFavorite = false
                     }
+                }
         }
             .onChange(of: isFavorite) { newValue in
                 // Update favorite status
@@ -247,8 +251,3 @@ struct ListingView: View {
 }
 
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ListingView(listing: Listing(title: "Sample Listing", description: "This is a sample listing description.", category: .electronics, price: 99.99, seller: MiniUser(name: "John Doe", email: "john@example.com", phoneNumber: "123456789"), status: .available, favoriteCount: 0))
-    }
-}

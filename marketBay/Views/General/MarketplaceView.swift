@@ -13,6 +13,8 @@ struct MarketplaceView: View {
     @EnvironmentObject var sellingFireDBHelper: SellingFireDBHelper
     @EnvironmentObject var generalFireDBHelper: GeneralFireDBHelper
     @EnvironmentObject var authFireDBHelper: AuthenticationFireDBHelper
+    @EnvironmentObject var fireAuthHelper: FireAuthHelper
+
 
 
     
@@ -46,7 +48,10 @@ struct MarketplaceView: View {
                    ScrollView {
                        LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
                            ForEach(sellingFireDBHelper.listings.filter { $0.category == selectedCategory || selectedCategory == .all }) { listing in
-                                   ItemView(listing: listing)
+                                   ItemView(listing: listing).environmentObject(authFireDBHelper)
+                                   .environmentObject(generalFireDBHelper)
+                                   .environmentObject(fireAuthHelper)
+                                   .environmentObject(sellingFireDBHelper)
                                }
                        }
                         .padding(.horizontal)
@@ -71,11 +76,14 @@ struct ItemView: View {
     @EnvironmentObject var sellingFireDBHelper: SellingFireDBHelper
     @EnvironmentObject var generalFireDBHelper: GeneralFireDBHelper
     @EnvironmentObject var authFireDBHelper: AuthenticationFireDBHelper
+    @EnvironmentObject var fireAuthHelper: FireAuthHelper
+
 
     var body: some View {
         NavigationLink(destination: ListingView(listing: listing).environmentObject(sellingFireDBHelper)
             .environmentObject(authFireDBHelper)
-            .environmentObject(generalFireDBHelper)) {
+            .environmentObject(generalFireDBHelper)
+            .environmentObject(fireAuthHelper)) {
             VStack {
                 // Image and Title
                 if(listing.image.isEmpty) {

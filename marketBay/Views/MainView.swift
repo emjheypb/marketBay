@@ -89,6 +89,12 @@ struct MainView: View {
             switch appRootManager.currentRoot {
             case .favoritesView:
                 FavoritesView()
+                    .environmentObject(sellingFireDBHelper)
+                    .environmentObject(authFireDBHelper)
+                    .environmentObject(generalFireDBHelper)
+                    .environmentObject(fireAuthHelper)
+                    .environmentObject(appRootManager)
+
             case .registrationView:
                 RegistrationView()
             case .myPostsView:
@@ -103,9 +109,15 @@ struct MainView: View {
                     .environmentObject(sellingFireDBHelper)
                     .environmentObject(authFireDBHelper)
                     .environmentObject(generalFireDBHelper)
+                    .environmentObject(fireAuthHelper)
 
             default:
                 DashboardView()
+                    .environmentObject(sellingFireDBHelper)
+                    .environmentObject(authFireDBHelper)
+                    .environmentObject(generalFireDBHelper)
+                    .environmentObject(fireAuthHelper)
+                    .environmentObject(appRootManager)
             }
         }
     }

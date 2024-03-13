@@ -10,6 +10,6 @@ import Foundation
 struct Collection: Codable, Identifiable {
     var id: UUID = UUID() // Unique identifier for each collection
     var name: String
-    var listings: [MiniListing] // Listings in this collection
-    let ownerID: Int  // ID of the user who owns or created the collection
+    var listings: [MiniListing] = [] // Listings in this collection
+    let ownerID: String  // ID of the user who owns or created the collection
 }

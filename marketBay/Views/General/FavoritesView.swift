@@ -6,25 +6,30 @@
 //
 
 import SwiftUI
-
 struct FavoritesView: View {
     // Toggle between "All Items" and "Collections"
     @State private var showAllItems = true
     @State private var showCreateCollection = false
     @State private var showAddToList = false
+    @State private var favorites: [Listing] = []
+    @State private var collections: [Collection] = []
+
     
     @State private var newCollectionName = ""
     @State private var loggedInUser: User?
     @State private var selectedCollections: [Collection] = []
     @State private var selectedListing: Listing?
     
-    @EnvironmentObject var dataAccess: DataAccess
+    @EnvironmentObject var authFireDBHelper: AuthenticationFireDBHelper
+    @EnvironmentObject var sellingFireDBHelper: SellingFireDBHelper
+    @EnvironmentObject var generalFireDBHelper: GeneralFireDBHelper
+    @EnvironmentObject var fireAuthHelper: FireAuthHelper
     
     var body: some View {
         NavigationStack {
             VStack {
                 // Menu Bar
-                MenuTemplate().environmentObject(dataAccess)
+                //MenuTemplate().environmentObject(fireAuthHelper)
                 // Title
                 Spacer()
                 Text("Favorites")
@@ -69,10 +74,16 @@ struct FavoritesView: View {
                 // Favorites List or Collections Grid
                 if showAllItems {
                     // List of all items
-                    FavoritesListView(showAddToList: $showAddToList, selectedListing: $selectedListing).environmentObject(dataAccess)
+                    FavoritesListView(showAddToList: $showAddToList, selectedListing: $selectedListing).environmentObject(authFireDBHelper)
+                        .environmentObject(generalFireDBHelper)
+                        .environmentObject(fireAuthHelper)
+                        .environmentObject(sellingFireDBHelper)
                 } else {
                     // Grid of collections
-                    CollectionsGridView()
+                    CollectionsGridView().environmentObject(authFireDBHelper)
+                        .environmentObject(generalFireDBHelper)
+                        .environmentObject(fireAuthHelper)
+                        .environmentObject(sellingFireDBHelper)
                 }
                 
                 // Create Collection Button
@@ -84,24 +95,26 @@ struct FavoritesView: View {
                         .foregroundColor(.blue)
                 }
                 .sheet(isPresented: $showCreateCollection) {
-                    CreateCollectionView(isPresented: $showCreateCollection, collectionName: $newCollectionName).environmentObject(dataAccess)
+                    CreateCollectionView(isPresented: $showCreateCollection, collectionName: $newCollectionName)
                 }
                 
                 Spacer()
             }
             .padding()
             .sheet(isPresented: $showAddToList) {
-                AddToListView(selectedCollections: $selectedCollections, selectedListing: $selectedListing, showAddToList: $showAddToList).environmentObject(dataAccess)
+                AddToListView(selectedCollections: $selectedCollections, selectedListing: $selectedListing, showAddToList: $showAddToList)
             }
             .onAppear{
-                // Fetch user-specific collections when the view appears
-                if let user = dataAccess.loggedInUser {
-                    dataAccess.getLoggedInUserCollections(for: user)
-                }
-                
-                // Fetch favorite listings for the logged-in user when the view appears
-                if let user = dataAccess.loggedInUser {
-                    dataAccess.loggedInUserFavorites = dataAccess.getLoggedInUserFavorites(for: user)
+                if let currUser = fireAuthHelper.user {
+                    authFireDBHelper.getUser(email: currUser.email!)
+                    // Fetch user-specific collections when the view appears
+                    generalFireDBHelper.getLoggedInUserCollections{ collections in
+                        self.collections = collections
+                    }
+                    // Fetch favorite listings for the logged-in user when the view appears
+                    generalFireDBHelper.getLoggedInUserFavorites { favorites in
+                                self.favorites = favorites
+                            }
                 }
             }
         }
@@ -109,29 +122,45 @@ struct FavoritesView: View {
 }
 
 struct FavoritesListView: View {
-    @EnvironmentObject var dataAccess: DataAccess
     @Binding var showAddToList: Bool
     @Binding var selectedListing: Listing?
-    
+    @State private var favorites: [Listing] = []
+
+    @EnvironmentObject var authFireDBHelper: AuthenticationFireDBHelper
+    @EnvironmentObject var generalFireDBHelper: GeneralFireDBHelper
+    @EnvironmentObject var fireAuthHelper: FireAuthHelper
+
     var body: some View {
         ScrollView {
             VStack {
-                ForEach(dataAccess.loggedInUserFavorites) { listing in
-                    FavoriteListItemView(listing: listing, showAddToList: $showAddToList, selectedListing: $selectedListing).environmentObject(dataAccess)
+                ForEach(favorites, id: \.id) { listing in
+                    FavoriteListItemView(listing: listing, showAddToList: $showAddToList, selectedListing: $selectedListing)
                         .padding(.vertical, 8)
                 }
             }
             .padding()
         }
+        .onAppear{
+            if let currUser = fireAuthHelper.user {
+                authFireDBHelper.getUser(email: currUser.email!)
+                // Fetch favorite listings for the logged-in user when the view appears
+                generalFireDBHelper.getLoggedInUserFavorites { favorites in
+                    self.favorites = favorites
+                }
+            }
+        }
     }
 }
+
 
 struct FavoriteListItemView: View {
     let listing: Listing
     @Binding var showAddToList: Bool
     @Binding var selectedListing: Listing?
     
-    @EnvironmentObject var dataAccess: DataAccess
+    @EnvironmentObject var authFireDBHelper: AuthenticationFireDBHelper
+    @EnvironmentObject var sellingFireDBHelper: SellingFireDBHelper
+    @EnvironmentObject var generalFireDBHelper: GeneralFireDBHelper
     
     var body: some View {
         HStack {
@@ -155,16 +184,15 @@ struct FavoriteListItemView: View {
                 Image(systemName: "plus.circle")
             }
             Button(action: {
-                // Remove item from favorites
-                dataAccess.toggleFavorite(for: listing) { success in
-                    if success {
-                        // Successfully removed from favorites
-                        print("\(listing)removed from favorites")
-                    } else {
-                        // Failed to remove from favorites
-                        print("Fail to remove listing from favorites")
+                generalFireDBHelper.removeFromFavorites(listing) { success in
+                        if success {
+                            // Successfully removed from favorites
+                            print("\(listing) removed from favorites")
+                        } else {
+                            // Failed to remove from favorites
+                            print("Failed to remove \(listing) from favorites")
+                        }
                     }
-                }
             }) {
                 Image(systemName: "minus.circle")
             }
@@ -173,52 +201,83 @@ struct FavoriteListItemView: View {
 }
 
 struct AddToListView: View {
-    @EnvironmentObject var dataAccess: DataAccess
     @Binding var selectedCollections: [Collection]
     @Binding var selectedListing: Listing?
     @Binding var showAddToList: Bool
     @State private var selectedCollectionIndex = 0
     
+    @EnvironmentObject var authFireDBHelper: AuthenticationFireDBHelper
+    @EnvironmentObject var sellingFireDBHelper: SellingFireDBHelper
+    @EnvironmentObject var generalFireDBHelper: GeneralFireDBHelper
+    
+    @State private var loggedInUserCollections: [Collection] = []
+    
     var body: some View {
         VStack {
             Picker("Select Collection", selection: $selectedCollectionIndex) {
-                ForEach(dataAccess.loggedInUserCollections.indices, id: \.self) { index in
-                    Text(dataAccess.loggedInUserCollections[index].name)
+                ForEach(loggedInUserCollections.indices, id: \.self) { index in
+                    Text(loggedInUserCollections[index].name)
                 }
             }
             .pickerStyle(MenuPickerStyle())
             
             Button("Add to Collection") {
                 if let listing = selectedListing {
-                    if selectedCollectionIndex < dataAccess.loggedInUserCollections.count {
-                        let selectedCollection = dataAccess.loggedInUserCollections[selectedCollectionIndex]
-                        dataAccess.addToCollection(listing: listing, collection: selectedCollection)
-                        showAddToList = false
-                    } else {
-                        // Handle invalid index scenario here
-                        print("Invalid collection index")
-                    }
-                }
-            }
+                    if selectedCollectionIndex < loggedInUserCollections.count {
+                        let selectedCollection = loggedInUserCollections[selectedCollectionIndex]
+                        generalFireDBHelper.addListingToCollection(listing, collection: selectedCollection) { error in
+                            if let error = error {
+                                                            // Handle error
+                                                            print("Error adding listing to collection: \(error.localizedDescription)")
+                                                        } else {
+                                                            // Successfully added to collection
+                                                            print("Listing added to collection")
+                                                            showAddToList = false
+                                                        }
+                                                    }
+                                                } else {
+                                                    // Handle invalid index scenario here
+                                                    print("Invalid collection index")
+                                                }
+                                            }
+                                        }
             .padding()
             .disabled(selectedListing == nil)
         }
         .padding()
+        .onAppear {
+                    // Fetch collections when the view appears
+                    generalFireDBHelper.getLoggedInUserCollections { collections in
+                        self.loggedInUserCollections = collections
+                    }
+                }
     }
 }
 
 struct CollectionsGridView: View {
-    @EnvironmentObject var dataAccess: DataAccess
-    
+    @EnvironmentObject var authFireDBHelper: AuthenticationFireDBHelper
+    @EnvironmentObject var generalFireDBHelper: GeneralFireDBHelper
+    @EnvironmentObject var fireAuthHelper: FireAuthHelper
+    @State private var loggedInUserCollections: [Collection] = []
+
     var body: some View {
         ScrollView {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
-                ForEach(dataAccess.loggedInUserCollections) { index in
+                ForEach(loggedInUserCollections) { collection in
                     // Example of a grid item in the collections grid view
-                    CollectionGridViewItem(collection: index)
+                    CollectionGridViewItem(collection: collection)
                 }
             }
             .padding()
+        }
+        .onAppear {
+            if let currUser = fireAuthHelper.user {
+                authFireDBHelper.getUser(email: currUser.email!)
+                // Fetch collections when the view appears
+                generalFireDBHelper.getLoggedInUserCollections { collections in
+                    self.loggedInUserCollections = collections
+                }
+            }
         }
     }
 }
@@ -247,44 +306,54 @@ struct CollectionGridViewItem: View {
         }
     }
 }
-
 struct CollectionListingsView: View {
     let collection: Collection
-    @EnvironmentObject var dataAccess: DataAccess
+    @EnvironmentObject var generalFireDBHelper: GeneralFireDBHelper
+    @State private var listings: [Listing] = []
 
     var body: some View {
         NavigationView {
             List {
-//                ForEach(collection.listings, id: \.id) { listing in
-//                    NavigationLink(destination: ListingView(listing: listing)) {
-//                        Text(listing.title)
-//                    }
-//                }
-//                .onDelete(perform: deleteListing)
+                ForEach(listings) { listing in
+                    NavigationLink(destination: ListingView(listing: listing)) {
+                        Text(listing.title)
+                    }
+                }
+                .onDelete(perform: deleteListing)
             }
             .navigationBarTitle(Text("Listings in \(collection.name)"))
+            .onAppear {
+                generalFireDBHelper.showListingsOfCollection(collection: collection) { fetchedListings in
+                    self.listings = fetchedListings
+                }
+            }
         }
     }
-    
     func deleteListing(at offsets: IndexSet) {
-        for index in offsets {
-            let listing = collection.listings[index]
-//            dataAccess.removeFromCollection(listing: listing, collection: collection)
+            for index in offsets {
+                let listing = listings[index]
+                generalFireDBHelper.removeListingFromCollection(listing, collection: collection) { success in
+                    if (success != nil) {
+                        // Successfully removed listing from collection
+                        listings.remove(at: index)
+                    } else {
+                        // Failed to remove listing from collection
+                    }
+                }
+            }
         }
     }
-}
 
 
 struct CreateCollectionView: View {
     @Binding var isPresented: Bool
     @Binding var collectionName: String
     
-    @EnvironmentObject var dataAccess: DataAccess
+    @EnvironmentObject var generalFireDBHelper: GeneralFireDBHelper
     
     var body: some View {
         NavigationView {
             VStack {
-                // Navigation Bar
                 HStack {
                     Button(action: {
                         isPresented = false
@@ -300,17 +369,23 @@ struct CreateCollectionView: View {
                     Spacer()
                     
                     Button(action: {
-                        // Action to create collection
-                        dataAccess.createCollection(name: collectionName)
-                        dataAccess.saveLoggedInUserCollections(for: dataAccess.loggedInUser!)
-                        isPresented = false
-                    }) {
-                        Text("Create")
-                    }
-                }
-                .padding()
+                                           // Call the addCollection method
+                                           generalFireDBHelper.addCollection(name: collectionName) { collection, error in
+                                               if let error = error {
+                                                   // Handle error
+                                                   print("Error creating collection: \(error.localizedDescription)")
+                                               } else if let collection = collection {
+                                                   // Collection created successfully
+                                                   print("Collection created successfully with ID: \(collection.id)")
+                                                   isPresented = false
+                                               }
+                                           }
+                                       }) {
+                                           Text("Create")
+                                       }
+                                   }
+                                   .padding()
                 
-                // Collection Name TextField
                 TextField("Enter Collection Name", text: $collectionName)
                     .padding()
                 
@@ -319,9 +394,3 @@ struct CreateCollectionView: View {
         }
     }
 }
-
-
-#Preview {
-    FavoritesView()
-}
-

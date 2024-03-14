@@ -16,7 +16,7 @@ struct DashboardView: View {
     var body: some View {
         NavigationStack {
             VStack {
-            MenuTemplate().environmentObject(dataAccess)
+            //MenuTemplate().environmentObject(dataAccess)
                 // Title "You"
                 Text("Dashboard")
                     .font(.title)

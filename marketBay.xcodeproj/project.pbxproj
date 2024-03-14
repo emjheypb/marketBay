@@ -25,15 +25,12 @@
 		998345B62B8EA64200C4DB8E /* SellingFireDBHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998345B52B8EA64200C4DB8E /* SellingFireDBHelper.swift */; };
 		998345B82B8EA65000C4DB8E /* FireAuthHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998345B72B8EA65000C4DB8E /* FireAuthHelper.swift */; };
 		998345BA2B8EA69F00C4DB8E /* MiniListing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998345B92B8EA69F00C4DB8E /* MiniListing.swift */; };
-		998345BC2B8EAA8700C4DB8E /* Chatroom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998345BB2B8EAA8700C4DB8E /* Chatroom.swift */; };
-		998345BE2B8EAAFA00C4DB8E /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998345BD2B8EAAFA00C4DB8E /* Chat.swift */; };
 		998345C02B8EAEB500C4DB8E /* MiniUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998345BF2B8EAEB500C4DB8E /* MiniUser.swift */; };
 		998345C22B8EB86D00C4DB8E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 998345C12B8EB86D00C4DB8E /* GoogleService-Info.plist */; };
 		99B5E6CD2B75CAC700C0786A /* marketBayApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B5E6CC2B75CAC700C0786A /* marketBayApp.swift */; };
 		99B5E6D12B75CACA00C0786A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99B5E6D02B75CACA00C0786A /* Assets.xcassets */; };
 		99B5E6D42B75CACA00C0786A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99B5E6D32B75CACA00C0786A /* Preview Assets.xcassets */; };
 		99B5E6DB2B75CB0500C0786A /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B5E6DA2B75CB0500C0786A /* DashboardView.swift */; };
-		99B5E6DD2B75CC3700C0786A /* MenuTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B5E6DC2B75CC3700C0786A /* MenuTemplate.swift */; };
 		99B5E6DF2B75CC9C00C0786A /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B5E6DE2B75CC9C00C0786A /* LoginView.swift */; };
 		99B5E6E12B75CCBB00C0786A /* RegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B5E6E02B75CCBB00C0786A /* RegistrationView.swift */; };
 		99B5E6E32B75D28100C0786A /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B5E6E22B75D28100C0786A /* FavoritesView.swift */; };
@@ -105,8 +102,6 @@
 		A64C449B2BA34B9B00614E8B /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = A64C449A2BA34B9B00614E8B /* FirebaseStorage */; };
 		A64C449D2BA34B9B00614E8B /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = A64C449C2BA34B9B00614E8B /* FirebaseStorageCombine-Community */; };
 		A64C44A02BA34BB300614E8B /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = A64C449F2BA34BB300614E8B /* SwiftyJSON */; };
-		A64C44A32BA34BCC00614E8B /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = A64C44A22BA34BCC00614E8B /* Alamofire */; };
-		A64C44A52BA34BCC00614E8B /* AlamofireDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = A64C44A42BA34BCC00614E8B /* AlamofireDynamic */; };
 		A6B0BE0C2B7AAF7E006A149A /* MarketplaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B0BE0B2B7AAF7E006A149A /* MarketplaceView.swift */; };
 		A6B0BE0E2B7AAFC0006A149A /* ListingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B0BE0D2B7AAFC0006A149A /* ListingView.swift */; };
 		A6B0BE112B7AB341006A149A /* Listing.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B0BE102B7AB341006A149A /* Listing.swift */; };
@@ -136,8 +131,6 @@
 		998345B52B8EA64200C4DB8E /* SellingFireDBHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellingFireDBHelper.swift; sourceTree = "<group>"; };
 		998345B72B8EA65000C4DB8E /* FireAuthHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireAuthHelper.swift; sourceTree = "<group>"; };
 		998345B92B8EA69F00C4DB8E /* MiniListing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniListing.swift; sourceTree = "<group>"; };
-		998345BB2B8EAA8700C4DB8E /* Chatroom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chatroom.swift; sourceTree = "<group>"; };
-		998345BD2B8EAAFA00C4DB8E /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
 		998345BF2B8EAEB500C4DB8E /* MiniUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniUser.swift; sourceTree = "<group>"; };
 		998345C12B8EB86D00C4DB8E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		99B5E6C92B75CAC700C0786A /* marketBay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = marketBay.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -145,7 +138,6 @@
 		99B5E6D02B75CACA00C0786A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		99B5E6D32B75CACA00C0786A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		99B5E6DA2B75CB0500C0786A /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
-		99B5E6DC2B75CC3700C0786A /* MenuTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTemplate.swift; sourceTree = "<group>"; };
 		99B5E6DE2B75CC9C00C0786A /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		99B5E6E02B75CCBB00C0786A /* RegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationView.swift; sourceTree = "<group>"; };
 		99B5E6E22B75D28100C0786A /* FavoritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesView.swift; sourceTree = "<group>"; };
@@ -212,7 +204,6 @@
 				A64C44712BA34B9B00614E8B /* FirebaseAppCheck in Frameworks */,
 				99DFA6E02B9F93E400DEFC15 /* FirebaseInAppMessaging-Beta in Frameworks */,
 				99DFA6D22B9F93E400DEFC15 /* FirebaseDatabaseSwift in Frameworks */,
-				A64C44A52BA34BCC00614E8B /* AlamofireDynamic in Frameworks */,
 				99DFA6DC2B9F93E400DEFC15 /* FirebaseFunctions in Frameworks */,
 				99DFA6F22B9F93E400DEFC15 /* FirebaseStorageCombine-Community in Frameworks */,
 				99DFA6EC2B9F93E400DEFC15 /* FirebaseRemoteConfig in Frameworks */,
@@ -227,7 +218,6 @@
 				99DFA6E22B9F93E400DEFC15 /* FirebaseInAppMessagingSwift-Beta in Frameworks */,
 				99DFA6F02B9F93E400DEFC15 /* FirebaseStorage in Frameworks */,
 				99DFA6D42B9F93E400DEFC15 /* FirebaseDynamicLinks in Frameworks */,
-				A64C44A32BA34BCC00614E8B /* Alamofire in Frameworks */,
 				99DFA6D82B9F93E400DEFC15 /* FirebaseFirestoreCombine-Community in Frameworks */,
 				99DFA6E82B9F93E400DEFC15 /* FirebaseMessaging in Frameworks */,
 				99DFA6E42B9F93E400DEFC15 /* FirebaseInstallations in Frameworks */,
@@ -331,7 +321,6 @@
 		99B5E6EB2B75D64C00C0786A /* Subviews */ = {
 			isa = PBXGroup;
 			children = (
-				99B5E6DC2B75CC3700C0786A /* MenuTemplate.swift */,
 				9900245A2B7B62BA00F94DF7 /* CustomBackFragment.swift */,
 				99741F0B2B7D4DE800B6311F /* Selling */,
 				99741F152B7D65CE00B6311F /* PageHeadingFragment.swift */,
@@ -360,8 +349,6 @@
 				A6B0BE102B7AB341006A149A /* Listing.swift */,
 				998345B92B8EA69F00C4DB8E /* MiniListing.swift */,
 				A6B0BE632B7E25F7006A149A /* Collection.swift */,
-				998345BB2B8EAA8700C4DB8E /* Chatroom.swift */,
-				998345BD2B8EAAFA00C4DB8E /* Chat.swift */,
 				A6B0BE5F2B7D811D006A149A /* SampleData.swift */,
 			);
 			path = Models;
@@ -476,8 +463,6 @@
 				A64C449A2BA34B9B00614E8B /* FirebaseStorage */,
 				A64C449C2BA34B9B00614E8B /* FirebaseStorageCombine-Community */,
 				A64C449F2BA34BB300614E8B /* SwiftyJSON */,
-				A64C44A22BA34BCC00614E8B /* Alamofire */,
-				A64C44A42BA34BCC00614E8B /* AlamofireDynamic */,
 			);
 			productName = marketBay;
 			productReference = 99B5E6C92B75CAC700C0786A /* marketBay.app */;
@@ -511,7 +496,6 @@
 				99DFA6BC2B9F93E400DEFC15 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				A64C44612BA34B8200614E8B /* XCRemoteSwiftPackageReference "GoogleAppMeasurement" */,
 				A64C449E2BA34BB300614E8B /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
-				A64C44A12BA34BCC00614E8B /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			productRefGroup = 99B5E6CA2B75CAC700C0786A /* Products */;
 			projectDirPath = "";
@@ -544,8 +528,6 @@
 				99DFA6B02B9ECF1200DEFC15 /* MainView.swift in Sources */,
 				998345C02B8EAEB500C4DB8E /* MiniUser.swift in Sources */,
 				A6B0BE622B7D87D8006A149A /* Categories.swift in Sources */,
-				998345BC2B8EAA8700C4DB8E /* Chatroom.swift in Sources */,
-				99B5E6DD2B75CC3700C0786A /* MenuTemplate.swift in Sources */,
 				990024572B7B4C7E00F94DF7 /* UserDefaultsEnum.swift in Sources */,
 				99DFA6F82B9FC9A600DEFC15 /* UploadPhotoSubview.swift in Sources */,
 				998345B82B8EA65000C4DB8E /* FireAuthHelper.swift in Sources */,
@@ -557,7 +539,6 @@
 				A6B0BE642B7E25F7006A149A /* Collection.swift in Sources */,
 				99B5E6E32B75D28100C0786A /* FavoritesView.swift in Sources */,
 				9913758C2B7DE73A0080D058 /* TextFragment.swift in Sources */,
-				998345BE2B8EAAFA00C4DB8E /* Chat.swift in Sources */,
 				A64C44522BA1E5E500614E8B /* MapView.swift in Sources */,
 				A6B0BE162B7AC15F006A149A /* CreatePostView.swift in Sources */,
 				998345B42B8EA63500C4DB8E /* AuthenticationFireDBHelper.swift in Sources */,
@@ -820,14 +801,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 5.0.1;
-			};
-		};
-		A64C44A12BA34BCC00614E8B /* XCRemoteSwiftPackageReference "Alamofire" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.9.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -1122,16 +1095,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A64C449E2BA34BB300614E8B /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
 			productName = SwiftyJSON;
-		};
-		A64C44A22BA34BCC00614E8B /* Alamofire */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A64C44A12BA34BCC00614E8B /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = Alamofire;
-		};
-		A64C44A42BA34BCC00614E8B /* AlamofireDynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A64C44A12BA34BCC00614E8B /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = AlamofireDynamic;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

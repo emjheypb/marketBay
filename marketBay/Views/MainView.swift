@@ -64,6 +64,7 @@ struct MainView: View {
                     if(fireAuthHelper.user != nil) {
                         Button (role:.destructive) {
                             fireAuthHelper.signOut()
+                            authFireDBHelper.user = nil
                             appRootManager.currentRoot = .marketplaceView
                         } label:{
                             Text("Logout")

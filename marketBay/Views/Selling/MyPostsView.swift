@@ -111,19 +111,8 @@ struct MyPostsView: View {
     }
     
     private func filterPosts(status: PostStatus, searchString: String) -> [MiniListing] {
-        let currListings = authFireDBHelper.userListings.filter{$0.status == status.rawValue}
-        if(searchString.isEmpty) {
-            return currListings
-        }
-        
-        var result: [MiniListing] = []
-        for listing in currListings {
-            if(listing.title.lowercased().contains(searchString.lowercased()) || listing.id!.lowercased().contains(searchString.lowercased())) {
-                result.append(listing)
-            }
-        }
-        
-        return result
+        let currListings = authFireDBHelper.userListings.filter{$0.status == status.rawValue && (searchString.isEmpty || $0.title.lowercased().contains(searchString.lowercased()) || $0.id!.lowercased().contains(searchString.lowercased()))}
+        return currListings
     }
 }
 

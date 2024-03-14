@@ -15,8 +15,9 @@ struct MarketplaceView: View {
     @EnvironmentObject var authFireDBHelper: AuthenticationFireDBHelper
     @EnvironmentObject var fireAuthHelper: FireAuthHelper
 
-
-
+    @State private var searchString: String = ""
+    @State private var minAmount: String = ""
+    @State private var maxAmount: String = ""
     
     let categories: [Category] = [.all, .auto, .furniture, .electronics, .womensClothing, .mensClothing, .toys, .homeAndGarden]
 
@@ -24,30 +25,73 @@ struct MarketplaceView: View {
             NavigationStack {
                 VStack {
                     // Horizontal Category Selector
-                    ScrollView(.horizontal, showsIndicators: false) {
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                            .resizable()
+                            .frame(width: 15, height: 15)
+                        TextField("Enter item name", text: $searchString)
+                            .textInputAutocapitalization(.never)
+                    }
+                    .padding(5)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color.gray, lineWidth: 1)
+                    )
+                    .padding(.horizontal)
+                    
+                    HStack {
                         HStack {
+                            Text("$")
+                            TextField("0.00", text: $minAmount)
+                                .keyboardType(.numbersAndPunctuation)
+                            Text("to")
+                            TextField("0.00", text: $maxAmount)
+                                .keyboardType(.numbersAndPunctuation)
+                        }
+                        .padding(5)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.gray, lineWidth: 1)
+                        )
+                        .padding(.horizontal)
+                        
+                        Picker("Select category", selection: $selectedCategory) {
                             ForEach(categories, id: \.self) { category in
-                                Button(action: {
-                                    selectedCategory = category
-                                }) {
-                                    VStack {
-                                        Image(systemName: "circle.fill") // Placeholder image
-                                            .foregroundColor(category == selectedCategory ? .blue : .gray)
-                                        Text(category.rawValue) // Access the rawValue
-                                            .font(.caption)
-                                            .foregroundColor(category == selectedCategory ? .blue : .black)
-                                    }
-                                    .padding(.horizontal, 10)
-                                }
+                                Text(category.rawValue)
                             }
                         }
+                        .pickerStyle(.menu)
+                        .frame(width: 160, alignment: .leading)
                     }
-                    .padding(.vertical)
+//                    ScrollView(.horizontal, showsIndicators: false) {
+//                            ForEach(categories, id: \.self) { category in
+//                                Button(action: {
+//                                    selectedCategory = category
+//                                }) {
+//                                    VStack {
+//                                        Image(systemName: "circle.fill") // Placeholder image
+//                                            .foregroundColor(category == selectedCategory ? .blue : .gray)
+//                                        Text(category.rawValue) // Access the rawValue
+//                                            .font(.caption)
+//                                            .foregroundColor(category == selectedCategory ? .blue : .black)
+//                                    }
+//                                    .padding(.horizontal, 10)
+//                                }
+//                            }
+//                        }
+//                    }
+//                    .padding(.vertical)
                     
                     // Grid-like Display of Items
                    ScrollView {
                        LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
-                           ForEach(sellingFireDBHelper.listings.filter { $0.category == selectedCategory || selectedCategory == .all }) { listing in
+                           ForEach(sellingFireDBHelper.listings.filter {
+                               ($0.category == selectedCategory || selectedCategory == .all)
+                               && $0.status == PostStatus.available
+                               && (searchString.isEmpty || $0.title.lowercased().contains(searchString.lowercased()))
+                               && (minAmount.isEmpty || Double(minAmount) == nil || Double(minAmount) ?? 0 < $0.price)
+                               && (maxAmount.isEmpty || Double(maxAmount) == nil || Double(maxAmount) ?? 0 > $0.price)
+                           }) { listing in
                                    ItemView(listing: listing).environmentObject(authFireDBHelper)
                                    .environmentObject(generalFireDBHelper)
                                    .environmentObject(fireAuthHelper)

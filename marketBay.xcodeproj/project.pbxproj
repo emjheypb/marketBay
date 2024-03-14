@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		82812B322BA2CE4E004BC926 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82812B312BA2CE4E004BC926 /* Currency.swift */; };
 		990024572B7B4C7E00F94DF7 /* UserDefaultsEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990024562B7B4C7E00F94DF7 /* UserDefaultsEnum.swift */; };
 		990024592B7B515700F94DF7 /* DataAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990024582B7B515700F94DF7 /* DataAccess.swift */; };
 		9900245B2B7B62BA00F94DF7 /* CustomBackFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9900245A2B7B62BA00F94DF7 /* CustomBackFragment.swift */; };
@@ -84,6 +85,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		82812B312BA2CE4E004BC926 /* Currency.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
 		990024562B7B4C7E00F94DF7 /* UserDefaultsEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsEnum.swift; sourceTree = "<group>"; };
 		990024582B7B515700F94DF7 /* DataAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAccess.swift; sourceTree = "<group>"; };
 		9900245A2B7B62BA00F94DF7 /* CustomBackFragment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBackFragment.swift; sourceTree = "<group>"; };
@@ -285,6 +287,7 @@
 		A6B0BE0F2B7AB314006A149A /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				82812B312BA2CE4E004BC926 /* Currency.swift */,
 				99B5E6E42B75D4AE00C0786A /* Enums */,
 				A6B0BE122B7AB34E006A149A /* User.swift */,
 				998345BF2B8EAEB500C4DB8E /* MiniUser.swift */,
@@ -471,6 +474,7 @@
 				99DFA6F62B9F9E9A00DEFC15 /* PhotoLibraryPicker.swift in Sources */,
 				998345B62B8EA64200C4DB8E /* SellingFireDBHelper.swift in Sources */,
 				9951C6372BA25DCE00F23131 /* LocationHelper.swift in Sources */,
+				82812B322BA2CE4E004BC926 /* Currency.swift in Sources */,
 				A6B0BE112B7AB341006A149A /* Listing.swift in Sources */,
 				99DFA6F42B9F9E8D00DEFC15 /* CameraPicker.swift in Sources */,
 				996334032B7AF55300E1EBAA /* PostView.swift in Sources */,

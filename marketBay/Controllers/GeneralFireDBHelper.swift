@@ -8,6 +8,8 @@
 import Foundation
 import FirebaseFirestore
 import FirebaseStorage
+import Combine
+
 
 class GeneralFireDBHelper: ObservableObject {
     @Published var categories: [Category] = []
@@ -15,6 +17,7 @@ class GeneralFireDBHelper: ObservableObject {
     @Published var userFavorites: [Listing] = [] // Add userFavorites variable
 
     var listener: ListenerRegistration? = nil
+    var favoritesDidChange = PassthroughSubject<[Listing], Never>()
 
     
     private var categoriesCollectionRef: CollectionReference {
@@ -38,206 +41,245 @@ class GeneralFireDBHelper: ObservableObject {
     
     private init() {}
     
-    // Function to add a listing to a collection
-    func addListingToCollection(_ listing: Listing, collection: Collection, completion: @escaping (Error?) -> Void) {
+    // Function to listen for changes in the user's favorites collection
+    func listenToUserFavorites() {
         guard let user = authFireDBHelper.user else {
-            let error = NSError(domain: "GeneralFireDBHelper", code: 400, userInfo: [NSLocalizedDescriptionKey: "No user logged in"])
-            completion(error)
-            return
-        }
-        
-        guard let userID = user.id else {
-            let error = NSError(domain: "GeneralFireDBHelper", code: 400, userInfo: [NSLocalizedDescriptionKey: "User ID is nil"])
-            completion(error)
-            return
-        }
-        
-        let collectionID = collection.id.uuidString // Convert UUID to String
-        
-        let listingsRef = db.collection("Users").document(userID).collection("collections").document(collectionID).collection("listings")
-        
-        // Add the listing to the collection
-        guard let listingID = listing.id else {
-            let error = NSError(domain: "GeneralFireDBHelper", code: 400, userInfo: [NSLocalizedDescriptionKey: "Listing ID is nil"])
-            completion(error)
-            return
-        }
-        
-        let data = ["id": listingID, "title": listing.title, "price": listing.price] as [String : Any] // Add more fields as needed
-        listingsRef.addDocument(data: data) { error in
-            if let error = error {
-                completion(error)
-            } else {
-                completion(nil)
-            }
-        }
-    }
-
-    // Function to remove a listing from a collection
-    func removeListingFromCollection(_ listing: Listing, collection: Collection, completion: @escaping (Error?) -> Void) {
-        guard let user = authFireDBHelper.user else {
-            let error = NSError(domain: "GeneralFireDBHelper", code: 400, userInfo: [NSLocalizedDescriptionKey: "No user logged in"])
-            completion(error)
-            return
-        }
-        
-        guard let userID = user.id else {
-            let error = NSError(domain: "GeneralFireDBHelper", code: 400, userInfo: [NSLocalizedDescriptionKey: "User ID is nil"])
-            completion(error)
-            return
-        }
-        
-        let collectionID = collection.id.uuidString // Convert UUID to String
-        
-        let listingsRef = db.collection("Users").document(userID).collection("collections").document(collectionID).collection("listings")
-        
-        // Remove the listing from the collection
-        guard let listingID = listing.id else {
-            let error = NSError(domain: "GeneralFireDBHelper", code: 400, userInfo: [NSLocalizedDescriptionKey: "Listing ID is nil"])
-            completion(error)
-            return
-        }
-        
-        listingsRef.whereField("id", isEqualTo: listingID).getDocuments { snapshot, error in
-            if let error = error {
-                completion(error)
-                return
-            }
-            
-            guard let documents = snapshot?.documents else {
-                let error = NSError(domain: "GeneralFireDBHelper", code: 400, userInfo: [NSLocalizedDescriptionKey: "No documents found"])
-                completion(error)
-                return
-            }
-            
-            // Delete all documents matching the listing ID (in case of duplicates)
-            for document in documents {
-                document.reference.delete()
-            }
-            
-            completion(nil)
-        }
-    }
-
-    
-    // Function to add a collection
-    func addCollection(name: String, completion: @escaping (Collection?, Error?) -> Void) {
-        // Get the current user
-        guard let user = authFireDBHelper.user else {
-            let error = NSError(domain: "GeneralFireDBHelper", code: 400, userInfo: [NSLocalizedDescriptionKey: "No user logged in"])
-            completion(nil, error)
+            print("Error: No logged-in user found")
             return
         }
         
         // Unwrap the user ID safely
-        guard let userID = user.id else {
-            let error = NSError(domain: "GeneralFireDBHelper", code: 400, userInfo: [NSLocalizedDescriptionKey: "User ID is nil"])
-            completion(nil, error)
+               guard let userID = user.id else {
+                   print("Error: User ID is nil")
+                   return
+               }
+        
+        // Reference to the user's favorites collection
+        let userFavoritesRef = db.collection("Users").document(userID).collection("favorites")
+        
+        // Listen for snapshot changes in the user's favorites collection
+        userFavoritesRef.addSnapshotListener { snapshot, error in
+        guard let snapshot = snapshot else {
+            print("Error fetching user's favorites: \(error?.localizedDescription ?? "Unknown error")")
             return
         }
+        // Parse snapshot data to Listing objects
+        let favorites = snapshot.documents.compactMap { document -> Listing? in
+            do {
+                let listing = try document.data(as: Listing.self)
+                return listing
+            } catch {
+                print("Error decoding listing: \(error.localizedDescription)")
+                return nil
+            }
+        }
         
-        // Implement logic to add the collection to Firestore
-        let collectionRef = db.collection("Users").document(userID).collection("collections")
-        let data = ["name": name, "ownerID": userID] // Add more fields as needed
-        collectionRef.addDocument(data: data) { error in
-            if let error = error {
-                completion(nil, error)
-            } else {
-                // Collection added successfully, create the Collection object
-                let newCollection = Collection(name: name, ownerID: userID)
-                self.userCollections.append(newCollection) // Update userCollections
-                completion(newCollection, nil)
-            }
+        // Update userFavorites array with the latest data
+        self.userFavorites = favorites
         }
+        
     }
-
     
-    // Function to delete a collection
-        func deleteCollection(_ collection: Collection, completion: @escaping (Error?) -> Void) {
-            // Get the current user
-            guard let user = authFireDBHelper.user else {
-                let error = NSError(domain: "GeneralFireDBHelper", code: 400, userInfo: [NSLocalizedDescriptionKey: "No user logged in"])
-                completion(error)
-                return
-            }
-            
-            // Unwrap the user ID safely
-            guard let userID = user.id else {
-                let error = NSError(domain: "GeneralFireDBHelper", code: 400, userInfo: [NSLocalizedDescriptionKey: "User ID is nil"])
-                completion(error)
-                return
-            }
-            
-            // Implement logic to delete the collection from Firestore
-            let collectionRef = db.collection("Users").document(userID).collection("collections")
-            let collectionID = collection.id.uuidString // Convert UUID to String
-            collectionRef.document(collectionID).delete { error in
-                if let error = error {
-                    completion(error)
-                } else {
-                    // Remove deleted collection from userCollections
-                    if let index = self.userCollections.firstIndex(where: { $0.id == collection.id }) {
-                    self.userCollections.remove(at: index)
-                }
-                    completion(nil)
-                }
-            }
-        }
-    
-    // Function to show all collections for the logged-in user
-        func getLoggedInUserCollections(completion: @escaping ([Collection]) -> Void) {
-            guard let user = authFireDBHelper.user else {
-                completion([])
-                return
-            }
-            let userID = user.id ?? ""
-            let collectionsRef = db.collection("Users").document(userID).collection("collections")
-            collectionsRef.getDocuments { snapshot, error in
-                if let error = error {
-                    print("Error getting user's collections: \(error.localizedDescription)")
-                    completion([])
-                    return
-                }
-                var collections: [Collection] = []
-                if let documents = snapshot?.documents {
-                    for document in documents {
-                        if let collection = try? document.data(as: Collection.self) {
-                            collections.append(collection)
-                        }
-                    }
-                }
-                // Update userCollections
-                self.userCollections = collections
-                completion(collections)
-            }
-        }
-    
-    // Function to show all listings of a specific collection for the logged-in user
-        func showListingsOfCollection(collection: Collection, completion: @escaping ([Listing]) -> Void) {
-            guard let user = authFireDBHelper.user else {
-                completion([])
-                return
-            }
-            let userID = user.id ?? ""
-            let collectionID = collection.id.uuidString // Convert UUID to String
-            let listingsRef = db.collection("Users").document(userID).collection("collections").document(collectionID).collection("listings")
-            listingsRef.getDocuments { snapshot, error in
-                if let error = error {
-                    print("Error getting listings of collection: \(error.localizedDescription)")
-                    completion([])
-                    return
-                }
-                var listings: [Listing] = []
-                if let documents = snapshot?.documents {
-                    for document in documents {
-                        if let listing = try? document.data(as: Listing.self) {
-                            listings.append(listing)
-                        }
-                    }
-                }
-                completion(listings)
-            }
-        }
+//    // Function to add a listing to a collection
+//    func addListingToCollection(_ listing: Listing, collection: Collection, completion: @escaping (Error?) -> Void) {
+//        guard let user = authFireDBHelper.user else {
+//            let error = NSError(domain: "GeneralFireDBHelper", code: 400, userInfo: [NSLocalizedDescriptionKey: "No user logged in"])
+//            completion(error)
+//            return
+//        }
+//
+//        guard let userID = user.id else {
+//            let error = NSError(domain: "GeneralFireDBHelper", code: 400, userInfo: [NSLocalizedDescriptionKey: "User ID is nil"])
+//            completion(error)
+//            return
+//        }
+//
+//        let collectionID = collection.id.uuidString // Convert UUID to String
+//
+//        let listingsRef = db.collection("Users").document(userID).collection("collections").document(collectionID).collection("listings")
+//
+//        // Add the listing to the collection
+//        guard let listingID = listing.id else {
+//            let error = NSError(domain: "GeneralFireDBHelper", code: 400, userInfo: [NSLocalizedDescriptionKey: "Listing ID is nil"])
+//            completion(error)
+//            return
+//        }
+//
+//        let data = ["id": listingID, "title": listing.title, "price": listing.price] as [String : Any] // Add more fields as needed
+//        listingsRef.addDocument(data: data) { error in
+//            if let error = error {
+//                completion(error)
+//            } else {
+//                completion(nil)
+//            }
+//        }
+//    }
+//
+//    // Function to remove a listing from a collection
+//    func removeListingFromCollection(_ listing: Listing, collection: Collection, completion: @escaping (Error?) -> Void) {
+//        guard let user = authFireDBHelper.user else {
+//            let error = NSError(domain: "GeneralFireDBHelper", code: 400, userInfo: [NSLocalizedDescriptionKey: "No user logged in"])
+//            completion(error)
+//            return
+//        }
+//
+//        guard let userID = user.id else {
+//            let error = NSError(domain: "GeneralFireDBHelper", code: 400, userInfo: [NSLocalizedDescriptionKey: "User ID is nil"])
+//            completion(error)
+//            return
+//        }
+//
+//        let collectionID = collection.id.uuidString // Convert UUID to String
+//
+//        let listingsRef = db.collection("Users").document(userID).collection("collections").document(collectionID).collection("listings")
+//
+//        // Remove the listing from the collection
+//        guard let listingID = listing.id else {
+//            let error = NSError(domain: "GeneralFireDBHelper", code: 400, userInfo: [NSLocalizedDescriptionKey: "Listing ID is nil"])
+//            completion(error)
+//            return
+//        }
+//
+//        listingsRef.whereField("id", isEqualTo: listingID).getDocuments { snapshot, error in
+//            if let error = error {
+//                completion(error)
+//                return
+//            }
+//
+//            guard let documents = snapshot?.documents else {
+//                let error = NSError(domain: "GeneralFireDBHelper", code: 400, userInfo: [NSLocalizedDescriptionKey: "No documents found"])
+//                completion(error)
+//                return
+//            }
+//
+//            // Delete all documents matching the listing ID (in case of duplicates)
+//            for document in documents {
+//                document.reference.delete()
+//            }
+//
+//            completion(nil)
+//        }
+//    }
+//
+//
+//    // Function to add a collection
+//    func addCollection(name: String, completion: @escaping (Collection?, Error?) -> Void) {
+//        // Get the current user
+//        guard let user = authFireDBHelper.user else {
+//            let error = NSError(domain: "GeneralFireDBHelper", code: 400, userInfo: [NSLocalizedDescriptionKey: "No user logged in"])
+//            completion(nil, error)
+//            return
+//        }
+//
+//        // Unwrap the user ID safely
+//        guard let userID = user.id else {
+//            let error = NSError(domain: "GeneralFireDBHelper", code: 400, userInfo: [NSLocalizedDescriptionKey: "User ID is nil"])
+//            completion(nil, error)
+//            return
+//        }
+//
+//        // Implement logic to add the collection to Firestore
+//        let collectionRef = db.collection("Users").document(userID).collection("collections")
+//        let data = ["name": name, "ownerID": userID] // Add more fields as needed
+//        collectionRef.addDocument(data: data) { error in
+//            if let error = error {
+//                completion(nil, error)
+//            } else {
+//                // Collection added successfully, create the Collection object
+//                let newCollection = Collection(name: name, ownerID: userID)
+//                self.userCollections.append(newCollection) // Update userCollections
+//                completion(newCollection, nil)
+//            }
+//        }
+//    }
+//
+//
+//    // Function to delete a collection
+//        func deleteCollection(_ collection: Collection, completion: @escaping (Error?) -> Void) {
+//            // Get the current user
+//            guard let user = authFireDBHelper.user else {
+//                let error = NSError(domain: "GeneralFireDBHelper", code: 400, userInfo: [NSLocalizedDescriptionKey: "No user logged in"])
+//                completion(error)
+//                return
+//            }
+//
+//            // Unwrap the user ID safely
+//            guard let userID = user.id else {
+//                let error = NSError(domain: "GeneralFireDBHelper", code: 400, userInfo: [NSLocalizedDescriptionKey: "User ID is nil"])
+//                completion(error)
+//                return
+//            }
+//
+//            // Implement logic to delete the collection from Firestore
+//            let collectionRef = db.collection("Users").document(userID).collection("collections")
+//            let collectionID = collection.id.uuidString // Convert UUID to String
+//            collectionRef.document(collectionID).delete { error in
+//                if let error = error {
+//                    completion(error)
+//                } else {
+//                    // Remove deleted collection from userCollections
+//                    if let index = self.userCollections.firstIndex(where: { $0.id == collection.id }) {
+//                    self.userCollections.remove(at: index)
+//                }
+//                    completion(nil)
+//                }
+//            }
+//        }
+//
+//    // Function to show all collections for the logged-in user
+//        func getLoggedInUserCollections(completion: @escaping ([Collection]) -> Void) {
+//            guard let user = authFireDBHelper.user else {
+//                completion([])
+//                return
+//            }
+//            let userID = user.id ?? ""
+//            let collectionsRef = db.collection("Users").document(userID).collection("collections")
+//            collectionsRef.getDocuments { snapshot, error in
+//                if let error = error {
+//                    print("Error getting user's collections: \(error.localizedDescription)")
+//                    completion([])
+//                    return
+//                }
+//                var collections: [Collection] = []
+//                if let documents = snapshot?.documents {
+//                    for document in documents {
+//                        if let collection = try? document.data(as: Collection.self) {
+//                            collections.append(collection)
+//                        }
+//                    }
+//                }
+//                // Update userCollections
+//                self.userCollections = collections
+//                completion(collections)
+//            }
+//        }
+//
+//    // Function to show all listings of a specific collection for the logged-in user
+//        func showListingsOfCollection(collection: Collection, completion: @escaping ([Listing]) -> Void) {
+//            guard let user = authFireDBHelper.user else {
+//                completion([])
+//                return
+//            }
+//            let userID = user.id ?? ""
+//            let collectionID = collection.id.uuidString // Convert UUID to String
+//            let listingsRef = db.collection("Users").document(userID).collection("collections").document(collectionID).collection("listings")
+//            listingsRef.getDocuments { snapshot, error in
+//                if let error = error {
+//                    print("Error getting listings of collection: \(error.localizedDescription)")
+//                    completion([])
+//                    return
+//                }
+//                var listings: [Listing] = []
+//                if let documents = snapshot?.documents {
+//                    for document in documents {
+//                        if let listing = try? document.data(as: Listing.self) {
+//                            listings.append(listing)
+//                        }
+//                    }
+//                }
+//                completion(listings)
+//            }
+//        }
     
     // Get All Favorites listing of a user
     func getLoggedInUserFavorites(completion: @escaping ([Listing]) -> Void) {
@@ -267,6 +309,7 @@ class GeneralFireDBHelper: ObservableObject {
                 }
             }
             // Update userFavorites
+            self.favoritesDidChange.send(favorites)
             self.userFavorites = favorites
             completion(favorites)
         }
@@ -387,6 +430,9 @@ class GeneralFireDBHelper: ObservableObject {
                     self.userFavorites.remove(at: index)
                 }
                 completion(true)
+                self.getLoggedInUserFavorites(){_ in
+                    // Empty completion handler
+                }
             }
         }
     }

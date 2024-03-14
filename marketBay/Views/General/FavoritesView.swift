@@ -162,10 +162,24 @@ struct FavoriteListItemView: View {
     var body: some View {
         HStack {
             // Image, Title, Price
-            Image(systemName: "photo")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 50, height: 50)
+            AsyncImage(url: URL(string: listing.image)) { phase in
+                switch phase {
+                case .empty:
+                    ProgressView()
+                case .success(let image):
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 50, height: 50)
+                case .failure:
+                    Image(systemName: "photo")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 50, height: 50)
+                @unknown default:
+                    EmptyView()
+                }
+            }
             VStack(alignment: .leading) {
                 Text(listing.title) // Display actual listing title
                 Text("$\(String(format: "%.2f", listing.price))") // Display actual price
@@ -245,8 +259,8 @@ struct AddToListView: View {
         .onAppear {
                     // Fetch collections when the view appears
                     generalFireDBHelper.getLoggedInUserCollections { collections in
-                        self.loggedInUserCollections = collections
                     }
+                    self.loggedInUserCollections = generalFireDBHelper.userCollections
                 }
     }
 }
@@ -255,12 +269,11 @@ struct CollectionsGridView: View {
     @EnvironmentObject var authFireDBHelper: AuthenticationFireDBHelper
     @EnvironmentObject var generalFireDBHelper: GeneralFireDBHelper
     @EnvironmentObject var fireAuthHelper: FireAuthHelper
-    @State private var loggedInUserCollections: [Collection] = []
 
     var body: some View {
         ScrollView {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
-                ForEach(loggedInUserCollections) { collection in
+                ForEach(generalFireDBHelper.userCollections) { collection in
                     // Example of a grid item in the collections grid view
                     CollectionGridViewItem(collection: collection)
                 }
@@ -272,7 +285,7 @@ struct CollectionsGridView: View {
                 authFireDBHelper.getUser(email: currUser.email!)
                 // Fetch collections when the view appears
                 generalFireDBHelper.getLoggedInUserCollections { collections in
-                    self.loggedInUserCollections = collections
+                    // Collections data is updated in generalFireDBHelper.userCollections
                 }
             }
         }

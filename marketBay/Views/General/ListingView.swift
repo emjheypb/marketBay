@@ -24,7 +24,11 @@ struct ListingView: View {
     @State private var showingContactOptions = false
     @State private var address: String = "" // Add state variable to hold the address
     @State private var errorMessage: String = ""
-    
+    @State private var currencyListForPicker = ["CAD", "AUD", "CHF", "CNY", "EUR", "GBP", "HKD", "INR", "JPY", "KRW", "MXN", "PHP", "SGD", "USD"]
+    @State private var selectedCurrency : String = "CAD"
+    @State private var exchangeRate : Double = 1.0
+    @State private var convertedPrice : Double = 1.0
+    @State private var exchangeRateFromAPI : Currency = Currency()
     
     var body: some View {
         HStack {
@@ -205,6 +209,20 @@ struct ListingView: View {
                         .foregroundColor(.green)
                         .padding(.vertical)
                     
+                    //Price conversion info
+                    HStack{
+                        Text("Convert to")
+                        Spacer()
+                        Picker("Currency", selection: self.$selectedCurrency){
+                            ForEach(0..<self.currencyListForPicker.count){ index in
+                                Text("\(self.currencyListForPicker[index])").tag(self.currencyListForPicker[index])
+                            }
+                        }
+                        Spacer()
+                        Text("\(String(format: "%.2f", self.convertedPrice))")
+                    }
+                    .font(.system(size: 20, weight: .bold))
+                    
                     // MapView to display listing's location
                     MapView(latitude: listing.location.latitude, longitude: listing.location.longitude, address: address)
                         .frame(height: 200)
@@ -247,6 +265,12 @@ struct ListingView: View {
                     isFavorite = false
                 }
             }
+            self.convertedPrice = listing.price * self.exchangeRate
+            self.getExchangeRateFromAPI()
+        }
+        .onChange(of: self.selectedCurrency){ newCurr in
+            self.exchangeRate = self.exchangeRateFromAPI.rates[newCurr]!
+            self.convertedPrice = listing.price * self.exchangeRate
         }
         .onChange(of: isFavorite) { newValue in
             // Update favorite status
@@ -275,6 +299,39 @@ struct ListingView: View {
             }
         }
         .navigationBarBackButtonHidden()
+    }
+    
+    private func getExchangeRateFromAPI(){
+        print(#function, "Getting data from API")
+        let websiteAddress:String = "https://open.er-api.com/v6/latest/CAD"
+        guard let apiURL = URL(string: websiteAddress) else {
+            print(#function, "ERROR: Cannot convert API address to a URL object")
+            return
+        }
+        let request = URLRequest(url:apiURL)
+        let task = URLSession.shared.dataTask(with: request) {
+            (data:Data?, response, error:Error?) in
+            if let error = error {
+                print(#function, "ERROR: Network error: \(error)")
+                return
+            }
+            if let jsonData = data {
+                print(#function, "Data received from API")
+                if let decodedResponse = try? JSONDecoder().decode(Currency.self, from:jsonData) {
+                    // if conversion successful, then output it to the console
+                    DispatchQueue.main.async {
+                        self.exchangeRateFromAPI = decodedResponse
+                    }
+                }
+                else {
+                    print(#function, "ERROR: Error converting data from JSON")
+                }
+            }
+            else {
+                print(#function, "ERROR: Did not receive data from the API")
+            }
+        }
+        task.resume()
     }
     
     private func convertCoordinatesToAddress() {

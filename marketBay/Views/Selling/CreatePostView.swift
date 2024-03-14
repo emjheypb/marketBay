@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import PhotosUI
 import FirebaseFirestore
 import CoreLocation
 
@@ -28,8 +27,7 @@ struct CreatePostView: View {
     @State private var showAlert: Bool = false
     @State private var errorMessage = ""
     
-    @State private var latitude: Double = 0 // Gordon: New input field for latitude
-    @State private var longitude: Double = 0 // Gordon: New input field for longitude
+    private let locationHelper = LocationHelper()
     
     var body: some View {
         CustomBackFragment()
@@ -83,12 +81,12 @@ struct CreatePostView: View {
                 // Price
                 TextboxFragment(fieldName: "Price", placeholder: "Price", binding: $priceIn, keyboardType: .decimalPad, isMandatory: true)
                 
-                // Description
-                MultilineTextboxFragment(fieldName: "Description", placeholder: "Description", binding: $descriptionIn)
-                
                 //Gordon: Address
                 TextboxFragment(fieldName: "Address", placeholder: "Address", binding: $addressIn, isMandatory: true)
                     .textInputAutocapitalization(.words)
+                
+                // Description
+                MultilineTextboxFragment(fieldName: "Description", placeholder: "Description", binding: $descriptionIn)
                 
                 // Listing Image
                 UploadPhotoSubview(listingImage: $listingImage, imageURL: "")
@@ -97,7 +95,7 @@ struct CreatePostView: View {
             Spacer()
             
             Button {
-                convertAddressToCoordinates(address: addressIn) { result in
+                locationHelper.convertAddressToCoordinates(address: addressIn) { result, latitude, longitude in
                     // MARK: Validate form
                     errorMessage = ""
                     
@@ -113,7 +111,16 @@ struct CreatePostView: View {
                         if let currentUser = authFireDBHelper.user {
                             
                             let newMiniUser = MiniUser(name: currentUser.name, email: currentUser.id!, phoneNumber: currentUser.phoneNumber)
-                            let newListing = Listing(title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: newMiniUser, status: .available, favoriteCount: 0, condition: conditionIn, location: GeoPoint(latitude: latitude, longitude: longitude)) // Gordon: Use latitudeIn and longitudeIn to create GeoPoint
+                            let newListing = Listing(
+                                title: titleIn,
+                                description: descriptionIn,
+                                category: categoryIn,
+                                price: Double(priceIn) ?? 0,
+                                seller: newMiniUser,
+                                status: .available,
+                                favoriteCount: 0,
+                                condition: conditionIn,
+                                location: GeoPoint(latitude: latitude, longitude: longitude)) // Gordon: Use latitudeIn and longitudeIn to create GeoPoint
                             
                             // insert to COLLECTION_LISTING
                             sellingFireDBHelper.insert(newData: newListing) { listingID, err in
@@ -151,26 +158,5 @@ struct CreatePostView: View {
         }
         .padding()
         .navigationBarBackButtonHidden(true)
-    }
-    
-    // Gordon
-    private func convertAddressToCoordinates(address: String, completionHandler: @escaping(Bool) -> Void) {
-        let geocoder = CLGeocoder()
-        geocoder.geocodeAddressString(address) { placemarks, error in
-            guard let placemark = placemarks?.first, let location = placemark.location else {
-                print("Error: Unable to geocode address")
-                completionHandler(false)
-                return
-            }
-            
-            let latitude = location.coordinate.latitude
-            let longitude = location.coordinate.longitude
-            
-            // Update latitudeIn and longitudeIn accordingly
-            self.latitude = latitude
-            self.longitude = longitude
-            completionHandler(true)
-            return
-        }
     }
 }

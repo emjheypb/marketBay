@@ -6,7 +6,9 @@
 //
 
 import SwiftUI
-import FirebaseStorage
+import CoreLocation
+import FirebaseFirestore
+import Contacts
 
 struct PostView: View {
     @Environment(\.dismiss)  var dismiss
@@ -17,6 +19,8 @@ struct PostView: View {
     @State private var titleIn: String = ""
     @State private var descriptionIn: String = ""
     @State private var categoryIn: Category = .auto
+    @State private var conditionIn: Condition = .brandNew
+    @State private var addressIn: String = ""
     @State private var priceIn: String = ""
     @State private var listingImage : UIImage?
     
@@ -25,8 +29,11 @@ struct PostView: View {
     @State private var showUpdateError: Bool = false
     @State private var errorMessage = ""
     @State private var showOffMarketAlert: Bool = false
+    @State private var latitude: Double = 0
+    @State private var longitude: Double = 0
     
     var listing: Listing
+    let locationHelper = LocationHelper()
     
     var body: some View {
         CustomBackFragment()
@@ -71,31 +78,54 @@ struct PostView: View {
                     .padding(.bottom, 5)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     
+                    // Condition Picker
+                    HStack {
+                        Text("*")
+                            .fontWeight(.bold)
+                            .foregroundStyle(.red)
+                        Text("Condition")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    Picker("Condition", selection: $conditionIn) {
+                        ForEach(Condition.allCases, id: \.self) { condition in
+                            Text(condition.rawValue).tag(condition)
+                        }
+                    }
+                    .padding(.bottom, 5)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    
                     // Price
                     TextboxFragment(fieldName: "Price", placeholder: "Price", binding: $priceIn, keyboardType: .decimalPad, isMandatory: true)
                     
+                    // Address
+                    TextboxFragment(fieldName: "Address", placeholder: "Address", binding: $addressIn, isMandatory: true)
+                        .textInputAutocapitalization(.words)
+                    
                     // Description
                     MultilineTextboxFragment(fieldName: "Description", placeholder: "Description", binding: $descriptionIn)
-                    
                     
                     Spacer()
                     
                     // MARK: Update Button
                     Button {
-                        // MARK: Validate form
-                        showUpdateError = false
-                        errorMessage = ""
-                        
-                        errorMessage += titleIn.isEmpty ? "\n• Title" : ""
-                        errorMessage += priceIn.isEmpty || Double(priceIn) == nil ? "\n• Price" : ""
-                        errorMessage += listingImage == nil && listing.image.isEmpty ? "\n• Image" : ""
-                        
-                        // MARK: Success
-                        if(!errorMessage.isEmpty) {
-                            showUpdateError = true
+                        locationHelper.convertAddressToCoordinates(address: addressIn) { result, latitude, longitude in
+                            // MARK: Validate form
+                            showUpdateError = false
+                            errorMessage = ""
+                            
+                            errorMessage += titleIn.isEmpty ? "\n• Title" : ""
+                            errorMessage += priceIn.isEmpty || Double(priceIn) == nil ? "\n• Price" : ""
+                            errorMessage += listingImage == nil && listing.image.isEmpty ? "\n• Image" : ""
+                            errorMessage += !result ? "\n• Address" : ""
+                            
+                            if(!errorMessage.isEmpty) {
+                                showUpdateError = true
+                            }
+                            
+                            self.latitude = latitude
+                            self.longitude = longitude
+                            showUpdateAlert =  true
                         }
-                        
-                        showUpdateAlert =  true
                     }label: {
                         Text("Update Post")
                             .frame(maxWidth: .infinity)
@@ -111,7 +141,18 @@ struct PostView: View {
                                 title: Text("Update Listing Details"),
                                 message: Text("Are you sure you want to update?"),
                                 primaryButton: .default(Text("Update")) {
-                                    var updatedListing = Listing(id: listing.id!, title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: listing.seller, status: listing.status, favoriteCount: listing.favoriteCount, image: listing.image, condition: listing.condition, location: listing.location)
+                                    var updatedListing = Listing(
+                                        id: listing.id!,
+                                        title: titleIn,
+                                        description: descriptionIn,
+                                        category: categoryIn,
+                                        price: Double(priceIn) ?? 0,
+                                        seller: listing.seller,
+                                        status: listing.status,
+                                        favoriteCount: listing.favoriteCount,
+                                        image: listing.image,
+                                        condition: conditionIn,
+                                        location: GeoPoint(latitude: latitude, longitude: longitude))
                                     if let image = listingImage {
                                         sellingFireDBHelper.updateImage(newData: updatedListing, newImage: image) { imageDownloadURL, error in
                                             if let imageURL = imageDownloadURL {
@@ -144,7 +185,18 @@ struct PostView: View {
                             title: Text("There's no turning back!"),
                             message: Text("Are you sure you want to take this off the market?"),
                             primaryButton: .destructive(Text("Take Off the Market")) {
-                                let updatedListing = Listing(id: listing.id!, title: titleIn, description: descriptionIn, category: categoryIn, price: Double(priceIn) ?? 0, seller: listing.seller, status: PostStatus.offTheMarket, favoriteCount: listing.favoriteCount, image: listing.image, condition: listing.condition, location: listing.location)
+                                let updatedListing = Listing(
+                                    id: listing.id!,
+                                    title: listing.title,
+                                    description: listing.description,
+                                    category: listing.category,
+                                    price: listing.price,
+                                    seller: listing.seller,
+                                    status: PostStatus.offTheMarket,
+                                    favoriteCount: listing.favoriteCount,
+                                    image: listing.image,
+                                    condition: listing.condition,
+                                    location: listing.location)
                                 sellingFireDBHelper.update(newData: updatedListing)
                                 authFireDBHelper.updateMiniListing(newData: updatedListing)
                                 dismiss()
@@ -159,8 +211,14 @@ struct PostView: View {
                     // Category
                     TextFragment(title: "Category", details: listing.category.rawValue, bottomPadding: 5, leadingPadding: 10)
                     
+                    // Condition
+                    TextFragment(title: "Condition", details: listing.condition.rawValue, bottomPadding: 5, leadingPadding: 10)
+                    
                     // Price
                     TextFragment(title: "Price", details: "$\(String(format: "%.2f", listing.price))", bottomPadding: 5, leadingPadding: 10)
+                    
+                    // Address
+                    TextFragment(title: "Address", details: addressIn, bottomPadding: 5, leadingPadding: 10)
                     
                     // Description
                     TextFragment(title: "Description", details: listing.description, bottomPadding: 5, leadingPadding: 10)
@@ -169,10 +227,14 @@ struct PostView: View {
                 }
             }
             .onAppear() {
+                locationHelper.convertCoordinatesToAddress(latitude: listing.location.latitude, longitude: listing.location.longitude) { address in
+                    addressIn = address
+                }
                 titleIn = listing.title
                 categoryIn = listing.category
                 descriptionIn = listing.description
                 priceIn = String(format: "%.2f", listing.price)
+                conditionIn = listing.condition
             }
         }
         .padding()

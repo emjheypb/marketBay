@@ -12,6 +12,7 @@
 		9900245B2B7B62BA00F94DF7 /* CustomBackFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9900245A2B7B62BA00F94DF7 /* CustomBackFragment.swift */; };
 		9913758A2B7DD12D0080D058 /* PostStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991375892B7DD12D0080D058 /* PostStatus.swift */; };
 		9913758C2B7DE73A0080D058 /* TextFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9913758B2B7DE73A0080D058 /* TextFragment.swift */; };
+		9951C6372BA25DCE00F23131 /* LocationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9951C6362BA25DCE00F23131 /* LocationHelper.swift */; };
 		996334032B7AF55300E1EBAA /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996334022B7AF55300E1EBAA /* PostView.swift */; };
 		99741F0E2B7D4E1300B6311F /* MyPostsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99741F0D2B7D4E1300B6311F /* MyPostsRow.swift */; };
 		99741F122B7D5FFA00B6311F /* TextboxFragment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99741F112B7D5FFA00B6311F /* TextboxFragment.swift */; };
@@ -71,7 +72,7 @@
 		99DFA6F82B9FC9A600DEFC15 /* UploadPhotoSubview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DFA6F72B9FC9A600DEFC15 /* UploadPhotoSubview.swift */; };
 		A64C44522BA1E5E500614E8B /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64C44512BA1E5E500614E8B /* MapView.swift */; };
 		A64C44542BA1EA4000614E8B /* Condition.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64C44532BA1EA4000614E8B /* Condition.swift */; };
-		A64C44562BA2628000614E8B /* CollectionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64C44552BA2628000614E8B /* CollectionsViewModel.swift */; };
+		A64C445A2BA27F4700614E8B /* CollectionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64C44592BA27F4700614E8B /* CollectionsViewModel.swift */; };
 		A6B0BE0C2B7AAF7E006A149A /* MarketplaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B0BE0B2B7AAF7E006A149A /* MarketplaceView.swift */; };
 		A6B0BE0E2B7AAFC0006A149A /* ListingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B0BE0D2B7AAFC0006A149A /* ListingView.swift */; };
 		A6B0BE112B7AB341006A149A /* Listing.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B0BE102B7AB341006A149A /* Listing.swift */; };
@@ -88,6 +89,7 @@
 		9900245A2B7B62BA00F94DF7 /* CustomBackFragment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBackFragment.swift; sourceTree = "<group>"; };
 		991375892B7DD12D0080D058 /* PostStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostStatus.swift; sourceTree = "<group>"; };
 		9913758B2B7DE73A0080D058 /* TextFragment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFragment.swift; sourceTree = "<group>"; };
+		9951C6362BA25DCE00F23131 /* LocationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHelper.swift; sourceTree = "<group>"; };
 		996334022B7AF55300E1EBAA /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		99741F0D2B7D4E1300B6311F /* MyPostsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPostsRow.swift; sourceTree = "<group>"; };
 		99741F112B7D5FFA00B6311F /* TextboxFragment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextboxFragment.swift; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 		A64C44512BA1E5E500614E8B /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		A64C44532BA1EA4000614E8B /* Condition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Condition.swift; sourceTree = "<group>"; };
 		A64C44552BA2628000614E8B /* CollectionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionsViewModel.swift; sourceTree = "<group>"; };
+		A64C44592BA27F4700614E8B /* CollectionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionsViewModel.swift; sourceTree = "<group>"; };
 		A6B0BE0B2B7AAF7E006A149A /* MarketplaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketplaceView.swift; sourceTree = "<group>"; };
 		A6B0BE0D2B7AAFC0006A149A /* ListingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingView.swift; sourceTree = "<group>"; };
 		A6B0BE102B7AB341006A149A /* Listing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Listing.swift; sourceTree = "<group>"; };
@@ -199,7 +202,8 @@
 				998345B52B8EA64200C4DB8E /* SellingFireDBHelper.swift */,
 				99DFA6F32B9F9E8D00DEFC15 /* CameraPicker.swift */,
 				99DFA6F52B9F9E9900DEFC15 /* PhotoLibraryPicker.swift */,
-				A64C44552BA2628000614E8B /* CollectionsViewModel.swift */,
+				9951C6362BA25DCE00F23131 /* LocationHelper.swift */,
+				A64C44592BA27F4700614E8B /* CollectionsViewModel.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -209,6 +213,7 @@
 			children = (
 				99B5E6CB2B75CAC700C0786A /* marketBay */,
 				99B5E6CA2B75CAC700C0786A /* Products */,
+				A64C44582BA278F500614E8B /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -267,6 +272,14 @@
 				9913758B2B7DE73A0080D058 /* TextFragment.swift */,
 			);
 			path = Subviews;
+			sourceTree = "<group>";
+		};
+		A64C44582BA278F500614E8B /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				A64C44552BA2628000614E8B /* CollectionsViewModel.swift */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		A6B0BE0F2B7AB314006A149A /* Models */ = {
@@ -443,6 +456,7 @@
 				A64C44522BA1E5E500614E8B /* MapView.swift in Sources */,
 				A6B0BE162B7AC15F006A149A /* CreatePostView.swift in Sources */,
 				998345B42B8EA63500C4DB8E /* AuthenticationFireDBHelper.swift in Sources */,
+				A64C445A2BA27F4700614E8B /* CollectionsViewModel.swift in Sources */,
 				99741F122B7D5FFA00B6311F /* TextboxFragment.swift in Sources */,
 				99B5E6DF2B75CC9C00C0786A /* LoginView.swift in Sources */,
 				9913758A2B7DD12D0080D058 /* PostStatus.swift in Sources */,
@@ -456,12 +470,12 @@
 				A6B0BE0E2B7AAFC0006A149A /* ListingView.swift in Sources */,
 				99DFA6F62B9F9E9A00DEFC15 /* PhotoLibraryPicker.swift in Sources */,
 				998345B62B8EA64200C4DB8E /* SellingFireDBHelper.swift in Sources */,
+				9951C6372BA25DCE00F23131 /* LocationHelper.swift in Sources */,
 				A6B0BE112B7AB341006A149A /* Listing.swift in Sources */,
 				99DFA6F42B9F9E8D00DEFC15 /* CameraPicker.swift in Sources */,
 				996334032B7AF55300E1EBAA /* PostView.swift in Sources */,
 				A64C44542BA1EA4000614E8B /* Condition.swift in Sources */,
 				A6B0BE602B7D811D006A149A /* SampleData.swift in Sources */,
-				A64C44562BA2628000614E8B /* CollectionsViewModel.swift in Sources */,
 				99B5E6E12B75CCBB00C0786A /* RegistrationView.swift in Sources */,
 				99741F0E2B7D4E1300B6311F /* MyPostsRow.swift in Sources */,
 				990024592B7B515700F94DF7 /* DataAccess.swift in Sources */,

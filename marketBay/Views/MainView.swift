@@ -105,6 +105,7 @@ struct MainView: View {
             case .profileView:
                 ProfileView()
                     .environmentObject(authFireDBHelper)
+                    .environmentObject(fireAuthHelper)
             case .marketplaceView:
                 MarketplaceView()
                     .environmentObject(sellingFireDBHelper)

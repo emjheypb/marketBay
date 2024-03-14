@@ -11,13 +11,18 @@ struct ProfileView: View {
     @EnvironmentObject private var appRootManager: AppRootManager
     //@EnvironmentObject var dataAccess: DataAccess
     @EnvironmentObject var authFireDBHelper: AuthenticationFireDBHelper
+    @EnvironmentObject var fireAuthHelper: FireAuthHelper
     
     @State private var loggedInUser: User?
     @State private var emailFromUI : String = ""
     @State private var nameFromUI : String = ""
+    @State private var passwordFromUI : String = ""
     @State private var phoneNumberFromUI : String = ""
     @State private var errorMessage : String = ""
+    @State private var passwordErrorMessage : String = ""
     @State private var successMessage : String = ""
+    @State private var passwordSuccessMessage : String = ""
+    @State private var showAlert : Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20.0) {
@@ -71,7 +76,6 @@ struct ProfileView: View {
                     .cornerRadius(10.0)
                 Spacer()
             }
-            Spacer()
             HStack{
                 Spacer()
                 Button{
@@ -80,6 +84,54 @@ struct ProfileView: View {
                     Text("Update")
                 }
                 .buttonStyle(.borderedProminent)
+                Spacer()
+            }
+            Spacer()
+            HStack{
+                Text("Password")
+                SecureField("Password", text: self.$passwordFromUI)
+            }
+            Spacer()
+            HStack{
+                Spacer()
+                Text(self.passwordErrorMessage)
+                    .padding(self.passwordErrorMessage.isEmpty ? 0.0 : 5.0)
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.white)
+                    .background(.red)
+                    .font(.title3)
+                    .cornerRadius(10.0)
+                Spacer()
+            }
+            HStack{
+                Spacer()
+                Text(self.passwordSuccessMessage)
+                    .padding(self.passwordSuccessMessage.isEmpty ? 0.0 : 5.0)
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.white)
+                    .background(.green)
+                    .font(.title3)
+                    .cornerRadius(10.0)
+                Spacer()
+            }
+            HStack{
+                Spacer()
+                Button{
+                    self.updatePassword()
+                }label: {
+                    Text("Update Password")
+                }
+                .buttonStyle(.borderedProminent)
+                .actionSheet(isPresented: self.$showAlert){
+                    ActionSheet(title: Text("Save New Password"),
+                                message: Text("Save the newly updated password to device?"), buttons: [
+                                    .default(Text("Yes")){
+                                        UserDefaults.standard.set(self.passwordFromUI, forKey: UserDefaultsEnum.USER_PASSWORD.rawValue)
+                                    },
+                                    .cancel()
+                                ]
+                        )
+                }
                 Spacer()
             }
             Spacer()
@@ -111,6 +163,30 @@ struct ProfileView: View {
             self.authFireDBHelper.update(newName: self.nameFromUI, newPhone: self.phoneNumberFromUI)
             self.errorMessage = ""
             self.successMessage = "Profile Updated Successfully"
+        }
+    }
+    
+    func updatePassword(){
+        //empty field validation
+        if self.passwordFromUI.isEmpty {
+            self.passwordErrorMessage = "Password field is empty. Please enter a valid password."
+            self.passwordSuccessMessage = ""
+            return
+        }
+        //password format validation
+        else if self.passwordFromUI.count < 6{
+            self.passwordErrorMessage = "Weak password. Length should be greater than 6 characters."
+            self.passwordSuccessMessage = ""
+            return
+        }
+        //update password
+        else{
+            self.fireAuthHelper.updatePassword(newPassword: self.passwordFromUI)
+            self.passwordErrorMessage = ""
+            self.passwordSuccessMessage = "Password Updated Successfully"
+            if UserDefaults.standard.bool(forKey: UserDefaultsEnum.rememberUser.rawValue){
+                self.showAlert = true
+            }
         }
     }
 }

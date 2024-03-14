@@ -70,6 +70,17 @@ class FireAuthHelper: ObservableObject{
         }
     }
     
+    func updatePassword(newPassword: String){
+        Auth.auth().currentUser?.updatePassword(to: newPassword){error in
+            if let err = error{
+                print(#function, "Error updating password: \(err)")
+            }
+            else{
+                print(#function, "Successfully updated password")
+            }
+        }
+    }
+    
     func signOut(){
         do {
             try? Auth.auth().signOut()
